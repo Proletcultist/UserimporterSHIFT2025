@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17.5
     container_name: postgres
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: mydb
     volumes:
-      - ./var/postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
@@ -21,10 +19,10 @@ services:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
-      - ./var/pgadmin_data:/var/lib/pgadmin
+      - pgadmin_data:/var/lib/pgadmin
     ports:
       - "5050:80"
     networks:

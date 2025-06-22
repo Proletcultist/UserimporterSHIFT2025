@@ -1,4 +1,4 @@
-package ru.cft.userimporter;
+package ru.shift.userimporter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

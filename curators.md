@@ -11,7 +11,7 @@
 - **Фото:**  
   ![Мокровицкий](./images/mokrovitskij.jpg)
 - **Telegram:** [@Sirijin](https://t.me/sirijin)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -20,7 +20,7 @@
 - **Фото:**  
   ![Головин](./images/dgolovin.jpg)
 - **Telegram:** [@vakalst](https://t.me/vakalst)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -29,7 +29,7 @@
 - **Фото:**  
   ![Инютин](./images/injutin.jpg)
 - **Telegram:** [@vladislav_ig0revi4](https://t.me/vladislav_ig0revi4)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -38,7 +38,7 @@
 - **Фото:**  
   ![Кононенко](./images/kononenko.jpg)
 - **Telegram:** [@xdigitalringo](https://t.me/xdigitalringo)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -47,7 +47,7 @@
 - **Фото:**  
   ![Скачков](./images/vskachkov.jpg)
 - **Telegram:** [@iJustWantToSee](https://t.me/iJustWantToSee)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -56,7 +56,7 @@
 - **Фото:**  
   ![Тунгусов](./images/tungusov.jpg)
 - **Telegram:** [@neusernename](https://t.me/neusernename)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -65,7 +65,7 @@
 - **Фото:**  
   ![Шелдяков](./images/sheldjakov.jpg)
 - **Telegram:** [@Loken_LW](https://t.me/Loken_LW)
-- **О себе:** 
+- **О себе:**
 
 ---
 
@@ -73,8 +73,8 @@
 
 - **Фото:**  
   ![Панов](./images/spanov.jpg)
-- **Telegram:** [](https://t.me/)
-- **О себе:** 
+- **Telegram:** [@savamlb](https://t.me/savamlb)
+- **О себе:**
 
 ---
 
@@ -83,7 +83,16 @@
 - **Фото:**  
   ![Шеховцов](./images/eshekhovtsov.jpg)
 - **Telegram:** [@EgorShhv](https://t.me/EgorShhv)
-- **О себе:** 
+- **О себе:**
+
+---
+
+### 👤 Семёнов Семён
+
+- **Фото:**
+  ![Семёнов](./images/ssemjonov.jpg)
+- **Telegram:** [@SweetBulochhka](https://t.me/SweetBulochhka)
+- **О себе:**
 
 ---
 

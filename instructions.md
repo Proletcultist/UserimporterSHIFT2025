@@ -123,7 +123,7 @@
 ### PgAdmin
 
 - URL: http://localhost:5050
-- Логин: admin
+- email: admin@example.com
 - Пароль: admin
 
 ### PostgreSQL

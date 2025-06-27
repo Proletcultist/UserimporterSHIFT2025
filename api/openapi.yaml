@@ -297,13 +297,13 @@ components:
         errorCode:
           type: string
           enum:
-            - invalidFormat
-            - invalidName
-            - invalidLastName
-            - invalidMiddleName
-            - invalidEmail
-            - invalidPhone
-            - invalidBirthdate
+            - INVALID_FORMAT
+            - INVALID_NAME
+            - INVALID_LASTNAME
+            - INVALID_MIDDLE_NAME
+            - INVALID_EMAIL
+            - INVALID_PHONE
+            - INVALID_BIRTHDATE
           description: |- 
            Код ошибки. Возможные значения:
            * invalidFormat - Невалидная строка, не поддаётся парсингу;

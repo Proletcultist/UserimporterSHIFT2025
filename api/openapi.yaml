@@ -297,22 +297,22 @@ components:
         errorCode:
           type: string
           enum:
-            - invalidFormat
-            - invalidName
-            - invalidLastName
-            - invalidMiddleName
-            - invalidEmail
-            - invalidPhone
-            - invalidBirthdate
+            - INVALID_FORMAT
+            - INVALID_NAME
+            - INVALID_LAST_NAME
+            - INVALID_MIDDLE_NAME
+            - INVALID_EMAIL
+            - INVALID_PHONE
+            - INVALID_BIRTHDATE
           description: |- 
            Код ошибки. Возможные значения:
-           * invalidFormat - Невалидная строка, не поддаётся парсингу;
-           * invalidName - Ошибка в имени клиента;
-           * invalidLastName - Ошибка в фамилии клиента;
-           * invalidMiddleName - Ошибка в отчестве клиента;
-           * invalidEmail - Ошибка в адресе эл. почты;
-           * invalidPhone - Ошибка в номере телефона;
-           * invalidBirthdate - Ошибка в дате рождения;
+           * INVALID_FORMAT - Невалидная строка, не поддаётся парсингу;
+           * INVALID_NAME - Ошибка в имени клиента;
+           * INVALID_LAST_NAME - Ошибка в фамилии клиента;
+           * INVALID_MIDDLE_NAME - Ошибка в отчестве клиента;
+           * INVALID_EMAIL - Ошибка в адресе эл. почты;
+           * INVALID_PHONE - Ошибка в номере телефона;
+           * INVALID_BIRTHDATE - Ошибка в дате рождения;
         errorMessage:
           type: string
           description: Описание ошибки

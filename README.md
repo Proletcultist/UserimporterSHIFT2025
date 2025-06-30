@@ -1,9 +1,9 @@
 # java backend
 
-[Расписание](schedule.md)
+[Расписание](documentation/schedule.md)
 
-[Инструкции по работе с ПО](instructions.md)
+[Инструкции по работе с ПО](documentation/instructions.md)
 
-[Задание](backend%20task.md)
+[Задание](documentation/backend%20task.md)
 
-[Кураторы](curators.md)
+[Кураторы](documentation/curators.md)

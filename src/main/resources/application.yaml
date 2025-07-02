@@ -16,6 +16,3 @@ spring:
       hibernate:
         format_sql: true
 
-  docker:
-    compose:
-      enabled: true

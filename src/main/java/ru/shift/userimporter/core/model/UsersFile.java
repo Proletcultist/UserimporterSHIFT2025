@@ -13,17 +13,11 @@ public class UsersFile{
 	@Id
 	private Integer id;
 
-	@Column(name = "total_rows")
-	private Integer totalRows;
+	@Column(name = "inserted_rows")
+	private Integer insertedRows;
 
-	@Column(name = "processed_rows")
-	private Integer processedRows;
-
-	@Column(name = "valid_rows")
-	private Integer validRows;
-
-	@Column(name = "invalid_rows")
-	private Integer invalidRows;
+	@Column(name = "updated_rows")
+	private Integer updatedRows;
 
 	@Column(name = "original_filename")
 	private String originalFilename;

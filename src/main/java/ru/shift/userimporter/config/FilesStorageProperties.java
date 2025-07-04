@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.storage")
-public class FileServiceProperties{
+public class FilesStorageProperties{
 
 	private String location;
 

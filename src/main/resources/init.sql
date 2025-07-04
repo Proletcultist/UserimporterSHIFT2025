@@ -50,7 +50,8 @@ COMMENT ON COLUMN uploaded_files.original_filename IS 'Оригинальное 
 COMMENT ON COLUMN uploaded_files.storage_path IS 'Путь хранения файла';
 COMMENT ON COLUMN uploaded_files.status IS 'Статус обработки файла';
 COMMENT ON COLUMN uploaded_files.hash IS 'Хэш файла';
-COMMENT ON COLUMN uploaded_files.processed_rows IS 'Общее количество обработанных строк';
+COMMENT ON COLUMN uploaded_files.inserted_rows IS 'Количество записей, успешно добавленных в базу клиентов';
+COMMENT ON COLUMN uploaded_files.updated_rows IS 'Количество записей, успешно обновлённых в базе клиентов';
 
 CREATE TABLE file_processing_errors
 (

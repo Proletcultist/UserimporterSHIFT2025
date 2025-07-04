@@ -1,5 +1,6 @@
 package ru.shift.userimporter.core.model;
 
+import java.util.Date;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -9,26 +10,26 @@ import jakarta.persistence.Column;
 import lombok.Data;
 
 @Entity
-@Table(name = "uploaded_files")
+@Table(name = "file_processing_errors")
 @Data
-public class UsersFile{
+public class FileProcessingError{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	@Column(name = "inserted_rows")
-	private Integer insertedRows;
+	@Column(name = "file_id")
+	private Integer fileId;
 
-	@Column(name = "updated_rows")
-	private Integer updatedRows;
+	@Column(name = "row_number")
+	private Integer rowNumber;
 
-	@Column(name = "original_filename")
-	private String originalFilename;
+	@Column(name = "error_message")
+	private String errorMessage;
 
-	@Column(name = "storage_path")
-	private String storagePath;
+	@Column(name = "error_code")
+	private String errorCode;
 
-	private String status;
-	private String hash;
+	@Column(name = "raw_data")
+	private String rawData;
 }

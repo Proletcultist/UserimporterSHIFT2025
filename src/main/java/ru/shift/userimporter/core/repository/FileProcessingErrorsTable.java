@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.core.model.FileProcessingError;
 
 @Repository
-interface FileProcessingErrorsTable extends CrudRepository<FileProcessingError, Integer>{
+public interface FileProcessingErrorsTable extends CrudRepository<FileProcessingError, Integer>{
 	FileProcessingError save(FileProcessingError error);
 
 	Optional<FileProcessingError> findById(Integer id);

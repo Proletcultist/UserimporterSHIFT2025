@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.core.model.UsersFile;
 
 @Repository
-interface UploadedFilesTable extends CrudRepository<UsersFile, Integer>{
+public interface UploadedFilesTable extends CrudRepository<UsersFile, Integer>{
 	UsersFile save(UsersFile usersFile);
 
 	Optional<UsersFile> findById(Integer id);

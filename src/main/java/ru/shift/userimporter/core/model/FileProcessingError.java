@@ -15,7 +15,7 @@ import lombok.Data;
 public class FileProcessingError{
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@Column(name = "file_id")

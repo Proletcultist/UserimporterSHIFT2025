@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.lang.Runnable;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import ru.shift.userimporter.core.repository.FilesStorage;
 import ru.shift.userimporter.core.repository.UploadedFilesTable;
 import ru.shift.userimporter.core.repository.FileProcessingErrorsTable;
 import ru.shift.userimporter.core.exception.FileServiceException;
+import ru.shift.userimporter.core.exception.FileServiceBadFileException;
 
 @Service
 @Setter
@@ -47,12 +49,16 @@ public class FileService{
 	// File is named according to its' id in DB
 	// Then, creates entry in DB for it
 	// Returns UsersFile object, which represents DB entry, belongs to this file
-	public UsersFile storeUsersFile(MultipartFile file){
+	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceBadFileException{
+
+		if (file.isEmpty()){
+			throw new FileServiceBadFileException("Failed to store empty file");
+		}
 
 		String hash;
 
 		try (InputStream inputStream = file.getInputStream()){
-			Hasher hasher = Hashing.sha256().newHasher();
+			Hasher hasher = Hashing.murmur3_128().newHasher();
 			ByteStreams.copy(inputStream, Funnels.asOutputStream(hasher));
 			hash = hasher.hash().toString();
 		}
@@ -64,18 +70,25 @@ public class FileService{
 
 		String storingFilename = hash + "_" + String.valueOf(currentTime);
 
+		Path storedFile;
 		try (InputStream inputStream = file.getInputStream()){
-			storage.store(inputStream, storingFilename);
+			storedFile = storage.store(inputStream, storingFilename);
 		}
 		catch (IOException e){
 			throw new FileServiceException("Failed to open uploaded file");
 		}
 
-		// TODO: Add entry to the DB
+		UsersFile newEntry = UsersFile.builder()
+			.id(null)
+			.insertedRows(0)
+			.updatedRows(0)
+			.originalFilename(file.getOriginalFilename())
+			.storagePath(storedFile.toString())
+			.status("NEW")
+			.hash(hash)
+			.build();
 
-		UsersFile out = new UsersFile();
-		out.setId(1);
-		return out;
+		return uploadedFiles.save(newEntry);
 	}
 
 	// Search for file in DB

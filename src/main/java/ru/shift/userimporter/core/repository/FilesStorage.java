@@ -19,7 +19,7 @@ public class FilesStorage{
 	@Autowired
 	public FilesStorage(FilesStorageProperties properties) throws FilesStorageException{
 		try{
-			rootLocation = Paths.get(properties.getLocation());
+			rootLocation = Paths.get(properties.getLocation()).normalize().toAbsolutePath();
 			Files.createDirectories(rootLocation);
 		}
 		catch (InvalidPathException e){
@@ -44,7 +44,9 @@ public class FilesStorage{
 		Path destination = rootLocation.resolve(pathedFilename)
 				.normalize().toAbsolutePath();
 
-		if (!destination.getParent().equals(rootLocation.toAbsolutePath())){
+		if (!destination.getParent().equals(rootLocation)){
+			//System.out.println("Bad filename: " + filename);
+			System.out.println("Error cause: \nTrying to write: " + destination.getParent().toString() + "\nBut uploads dir is: " + rootLocation.toAbsolutePath());
 			throw new FilesStorageBadFilenameException("Cannot store file outside appropriate directory");
 		}
 

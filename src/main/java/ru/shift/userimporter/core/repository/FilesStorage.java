@@ -30,7 +30,7 @@ public class FilesStorage{
 		}
 	}
 
-	public void store(InputStream file, String filename) throws FilesStorageException,
+	public Path store(InputStream file, String filename) throws FilesStorageException,
 	       								FilesStorageBadFilenameException{
 		Path pathedFilename;
 		try{
@@ -45,8 +45,6 @@ public class FilesStorage{
 				.normalize().toAbsolutePath();
 
 		if (!destination.getParent().equals(rootLocation)){
-			//System.out.println("Bad filename: " + filename);
-			System.out.println("Error cause: \nTrying to write: " + destination.getParent().toString() + "\nBut uploads dir is: " + rootLocation.toAbsolutePath());
 			throw new FilesStorageBadFilenameException("Cannot store file outside appropriate directory");
 		}
 
@@ -57,5 +55,7 @@ public class FilesStorage{
 		catch(IOException e){
 			throw new FilesStorageException("Failed to store file", e);
 		}
+
+		return destination;
 	}
 }

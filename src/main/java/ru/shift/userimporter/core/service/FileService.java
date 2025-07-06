@@ -73,7 +73,9 @@ public class FileService{
 
 		// TODO: Add entry to the DB
 
-		return new UsersFile();
+		UsersFile out = new UsersFile();
+		out.setId(1);
+		return out;
 	}
 
 	// Search for file in DB

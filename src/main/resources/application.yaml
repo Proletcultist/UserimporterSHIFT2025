@@ -15,5 +15,5 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  storage:
-    location: ./uploads
+storage:
+  location: ./uploads

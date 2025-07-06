@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "spring.storage")
+@ConfigurationProperties(prefix = "storage")
 public class FilesStorageProperties{
 
 	private String location;

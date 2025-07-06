@@ -7,13 +7,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Entity
 @Table(name = "uploaded_files")
 @Data
 @Builder
+@AllArgsConstructor
 public class UsersFile{
+
+	public UsersFile(){}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

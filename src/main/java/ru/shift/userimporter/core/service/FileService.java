@@ -46,7 +46,7 @@ public class FileService{
 	}
 
 	// Loads file to local storage
-	// File is named according to its' id in DB
+	// File is named according to its' hash and current timestamp
 	// Then, creates entry in DB for it
 	// Returns UsersFile object, which represents DB entry, belongs to this file
 	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceBadFileException{
@@ -105,7 +105,7 @@ public class FileService{
 
 	// Search for file in DB
 	// Check if file is existing
-	// Initialize some reader class with file bufferized and pass it to new thread, processing it
+	// Starts processing in new thread in pool
 	public void startFileProcessing(UsersFile searchReq){
 
 

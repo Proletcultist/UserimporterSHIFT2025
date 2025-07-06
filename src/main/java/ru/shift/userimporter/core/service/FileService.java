@@ -51,10 +51,12 @@ public class FileService{
 	// Returns UsersFile object, which represents DB entry, belongs to this file
 	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceBadFileException{
 
+		// Check if file is empty
 		if (file.isEmpty()){
 			throw new FileServiceBadFileException("Failed to store empty file");
 		}
 
+		// Hashing file
 		String hash;
 
 		try (InputStream inputStream = file.getInputStream()){
@@ -66,10 +68,19 @@ public class FileService{
 			throw new FileServiceException("Failed hashing uploaded file");
 		}
 
+		// Check if this file is already exists
+		boolean foundEqual = false;
+		uploadedFiles.findByHash(hash).forEach(uploadedFile -> {
+			if (uploadedFile.getHash() == hash){
+				// TODO: Check if files is actually equal
+			}
+		});
+
 		long currentTime = Instant.now().getEpochSecond();
 
 		String storingFilename = hash + "_" + String.valueOf(currentTime);
 
+		// Storing file
 		Path storedFile;
 		try (InputStream inputStream = file.getInputStream()){
 			storedFile = storage.store(inputStream, storingFilename);
@@ -78,6 +89,7 @@ public class FileService{
 			throw new FileServiceException("Failed to open uploaded file");
 		}
 
+		// Inserting new entry for this file into DB
 		UsersFile newEntry = UsersFile.builder()
 			.id(null)
 			.insertedRows(0)

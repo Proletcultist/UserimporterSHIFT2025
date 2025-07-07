@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import ru.shift.userimporter.core.exception.FileServiceBadFileException;
+import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FilesStorageException;
 import ru.shift.userimporter.core.exception.FilesStorageBadFilenameException;
@@ -31,6 +32,12 @@ public class GlobalExceptionHandler{
 	@ExceptionHandler(value = FileServiceBadFileException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ErrorDto badFile(FileServiceBadFileException e){
+		return new ErrorDto(e.getMessage());
+	}
+
+	@ExceptionHandler(value = FileServiceFileAlreadyExistException.class)
+	@ResponseStatus(value = HttpStatus.CONFLICT)
+	public ErrorDto fileAlreadyExist(FileServiceFileAlreadyExistException e){
 		return new ErrorDto(e.getMessage());
 	}
 

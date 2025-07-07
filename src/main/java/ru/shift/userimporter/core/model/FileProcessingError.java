@@ -7,12 +7,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import ru.shift.userimporter.core.model.UsersFile;
 
 @Entity
 @Table(name = "file_processing_errors")
 @Data
+@Builder
+@AllArgsConstructor
 public class FileProcessingError{
+
+	public FileProcessingError(){}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +40,9 @@ public class FileProcessingError{
 
 	@Column(name = "raw_data")
 	private String rawData;
+
+	/*
+	@ManyToOne
+	private UsersFile usersFile;
+	*/
 }

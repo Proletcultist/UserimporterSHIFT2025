@@ -2,8 +2,12 @@ package ru.shift.userimporter.core.service;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.List;
 import java.lang.Runnable;
 import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.io.IOException;
@@ -17,12 +21,14 @@ import com.google.common.hash.Funnels;
 import com.google.common.io.ByteStreams;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.Hasher;
+import org.apache.commons.io.IOUtils;
 import ru.shift.userimporter.core.model.UsersFile;
 import ru.shift.userimporter.core.repository.FilesStorage;
 import ru.shift.userimporter.core.repository.UploadedFilesTable;
 import ru.shift.userimporter.core.repository.FileProcessingErrorsTable;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FileServiceBadFileException;
+import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 
 @Service
 @Setter
@@ -49,7 +55,8 @@ public class FileService{
 	// File is named according to its' hash and current timestamp
 	// Then, creates entry in DB for it
 	// Returns UsersFile object, which represents DB entry, belongs to this file
-	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceBadFileException{
+	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceBadFileException,
+	       								FileServiceFileAlreadyExistException{
 
 		// Check if file is empty
 		if (file.isEmpty()){
@@ -70,11 +77,29 @@ public class FileService{
 
 		// Check if this file is already exists
 		boolean foundEqual = false;
-		uploadedFiles.findByHash(hash).forEach(uploadedFile -> {
-			if (uploadedFile.getHash() == hash){
-				// TODO: Check if files is actually equal
+		for (UsersFile uploadedFile : uploadedFiles.findByHash(hash)){
+			if (uploadedFile.getHash().equals(hash)){
+				try (InputStream uploadedFileIS = new FileInputStream(uploadedFile.getStoragePath());
+						InputStream fileIS = file.getInputStream()){
+
+					if (IOUtils.contentEquals(uploadedFileIS, fileIS)){
+						foundEqual = true;
+						break;
+					}	
+
+				}
+				catch (FileNotFoundException e){
+					throw new FileServiceException("Failed to open stored file");
+				}
+				catch (IOException e){
+					throw new FileServiceException("Failed when comparing new and stored file");
+				}
 			}
-		});
+		}
+
+		if (foundEqual){
+			throw new FileServiceFileAlreadyExistException("File already exist");
+		}
 
 		long currentTime = Instant.now().getEpochSecond();
 
@@ -101,6 +126,10 @@ public class FileService{
 			.build();
 
 		return uploadedFiles.save(newEntry);
+	}
+
+	public List<UsersFile> getByStatus(String status){
+		return uploadedFiles.findByStatusWithErrors(status);
 	}
 
 	// Search for file in DB

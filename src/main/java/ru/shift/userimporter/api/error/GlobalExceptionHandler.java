@@ -7,19 +7,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-import ru.shift.userimporter.core.exception.FileServiceBadFileException;
+import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FilesStorageException;
-import ru.shift.userimporter.core.exception.FilesStorageBadFilenameException;
+import ru.shift.userimporter.core.exception.FilesStorageInvalidFilenameException;
 import ru.shift.userimporter.api.dto.ErrorDto;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
 
-	@ExceptionHandler(value = FilesStorageBadFilenameException.class)
+	@ExceptionHandler(value = FilesStorageInvalidFilenameException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto badFilename(FilesStorageBadFilenameException e){
+	public ErrorDto invalidFilename(FilesStorageInvalidFilenameException e){
 		return new ErrorDto(e.getMessage());
 	}
 	
@@ -29,9 +29,9 @@ public class GlobalExceptionHandler{
 		return new ErrorDto(e.getMessage());
 	}
 
-	@ExceptionHandler(value = FileServiceBadFileException.class)
+	@ExceptionHandler(value = FileServiceInvalidFileException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto badFile(FileServiceBadFileException e){
+	public ErrorDto invalidFile(FileServiceInvalidFileException e){
 		return new ErrorDto(e.getMessage());
 	}
 

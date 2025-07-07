@@ -25,7 +25,7 @@ import ru.shift.userimporter.core.repository.FilesStorage;
 import ru.shift.userimporter.core.repository.UploadedFilesRepository;
 import ru.shift.userimporter.core.repository.FileProcessingErrorsRepository;
 import ru.shift.userimporter.core.exception.FileServiceException;
-import ru.shift.userimporter.core.exception.FileServiceBadFileException;
+import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 
 @Service
@@ -41,12 +41,12 @@ public class FileService{
 	// File is named according to its' hash and current timestamp
 	// Then, creates entry in DB for it
 	// Returns UsersFile object, which represents DB entry, belongs to this file
-	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceBadFileException,
+	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceInvalidFileException,
 	       								FileServiceFileAlreadyExistException{
 
 		// Check if file is empty
 		if (file.isEmpty()){
-			throw new FileServiceBadFileException("Failed to store empty file");
+			throw new FileServiceInvalidFileException("Failed to store empty file");
 		}
 
 		// Hashing file

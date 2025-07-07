@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.config.FilesStorageProperties;
 import ru.shift.userimporter.core.exception.FilesStorageException;
-import ru.shift.userimporter.core.exception.FilesStorageBadFilenameException;
+import ru.shift.userimporter.core.exception.FilesStorageInvalidFilenameException;
 
 @Repository
 public class FilesStorage{
@@ -31,13 +31,13 @@ public class FilesStorage{
 	}
 
 	public Path store(InputStream file, String filename) throws FilesStorageException,
-	       								FilesStorageBadFilenameException{
+	       								FilesStorageInvalidFilenameException{
 		Path pathedFilename;
 		try{
 			pathedFilename = Paths.get(filename);
 		}
 		catch (InvalidPathException e){
-			throw new FilesStorageBadFilenameException("Bad filename", e);
+			throw new FilesStorageInvalidFilenameException("Invalid filename", e);
 		}
 
 
@@ -45,7 +45,7 @@ public class FilesStorage{
 				.normalize().toAbsolutePath();
 
 		if (!destination.getParent().equals(rootLocation)){
-			throw new FilesStorageBadFilenameException("Cannot store file outside appropriate directory");
+			throw new FilesStorageInvalidFilenameException("Cannot store file outside appropriate directory");
 		}
 
 

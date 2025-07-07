@@ -12,6 +12,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
 import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
@@ -22,9 +23,8 @@ import ru.shift.userimporter.core.model.FileProcessingError;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class UsersFile{
-
-	public UsersFile(){}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

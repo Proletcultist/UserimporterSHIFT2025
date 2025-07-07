@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
 import lombok.Setter;
 import ru.shift.userimporter.api.dto.PostFileResponseDto;
 import ru.shift.userimporter.core.service.FileService;
@@ -21,13 +23,9 @@ public class UserImporterController{
 
 	@Autowired
 	private UsersFileMapper usersFileMapper;
-	
-	@RequestMapping("/ping")
-	public static String ping(){
-		return "Pong";
-	}
 
 	@PostMapping("/files")
+	@ResponseStatus(value = HttpStatus.CREATED)
 	public PostFileResponseDto postFile(@RequestParam("file") MultipartFile file){
 		return usersFileMapper.usersFileToPostFileResponseDto(fileService.storeUsersFile(file));
 	}

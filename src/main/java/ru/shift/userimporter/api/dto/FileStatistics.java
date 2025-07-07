@@ -1,10 +1,8 @@
 package ru.shift.userimporter.api.dto;
 
-import lombok.Data;
+import lombok.Builder;
 
-@Data
-public class FileStatistics{
-	Integer insertedLinesCount;
-	Integer updatedLinesCount;
-	Integer errorProcessedLinesCount;
-}
+@Builder
+public record FileStatistics(Integer insertedLinesCount,
+				Integer updatedLinesCount,
+				Integer errorProcessedLinesCount){}

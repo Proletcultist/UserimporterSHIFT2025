@@ -10,18 +10,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
-import lombok.ToString;
-import lombok.EqualsAndHashCode;
 import ru.shift.userimporter.core.model.FileProcessingError;
 
 @Entity
 @Table(name = "uploaded_files")
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsersFile{
@@ -46,8 +46,6 @@ public class UsersFile{
 	private String hash;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@ToString.Exclude
-	@EqualsAndHashCode.Exclude
 	@JoinColumn(name = "file_id")
 	private List<FileProcessingError> errors;
 }

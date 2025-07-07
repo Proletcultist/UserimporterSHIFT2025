@@ -22,8 +22,8 @@ import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
 import ru.shift.userimporter.core.repository.FilesStorage;
-import ru.shift.userimporter.core.repository.UploadedFilesTable;
-import ru.shift.userimporter.core.repository.FileProcessingErrorsTable;
+import ru.shift.userimporter.core.repository.UploadedFilesRepository;
+import ru.shift.userimporter.core.repository.FileProcessingErrorsRepository;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FileServiceBadFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
@@ -33,8 +33,8 @@ import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException
 public class FileService{
 
 	private final FilesStorage storage;
-	private final UploadedFilesTable uploadedFiles;
-	private final FileProcessingErrorsTable processingErrors;
+	private final UploadedFilesRepository uploadedFiles;
+	private final FileProcessingErrorsRepository processingErrors;
 	private final ExecutorService threadPool = Executors.newCachedThreadPool();
 
 	// Loads file to local storage

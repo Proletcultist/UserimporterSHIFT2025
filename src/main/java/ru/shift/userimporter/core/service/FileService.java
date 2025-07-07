@@ -13,15 +13,13 @@ import java.time.Instant;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.annotation.PreDestroy;
-import jakarta.annotation.PostConstruct;
-import lombok.Setter;
 import com.google.common.hash.Funnels;
 import com.google.common.io.ByteStreams;
 import com.google.common.hash.Hashing;
 import com.google.common.hash.Hasher;
 import org.apache.commons.io.IOUtils;
+import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
 import ru.shift.userimporter.core.repository.FilesStorage;
 import ru.shift.userimporter.core.repository.UploadedFilesTable;
@@ -31,25 +29,13 @@ import ru.shift.userimporter.core.exception.FileServiceBadFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 
 @Service
-@Setter
+@RequiredArgsConstructor
 public class FileService{
 
-	@Autowired
-	private FilesStorage storage;
-
-	@Autowired
-	private UploadedFilesTable uploadedFiles;
-
-	@Autowired
-	private FileProcessingErrorsTable processingErrors;
-
-	private ExecutorService threadPool;
-
-
-	@PostConstruct
-	public void init(){
-		threadPool = Executors.newCachedThreadPool();
-	}
+	private final FilesStorage storage;
+	private final UploadedFilesTable uploadedFiles;
+	private final FileProcessingErrorsTable processingErrors;
+	private final ExecutorService threadPool = Executors.newCachedThreadPool();
 
 	// Loads file to local storage
 	// File is named according to its' hash and current timestamp

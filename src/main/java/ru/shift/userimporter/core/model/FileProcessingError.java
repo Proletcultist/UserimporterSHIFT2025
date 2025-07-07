@@ -7,16 +7,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
-import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import ru.shift.userimporter.core.model.UsersFile;
 
 @Entity
 @Table(name = "file_processing_errors")
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileProcessingError{

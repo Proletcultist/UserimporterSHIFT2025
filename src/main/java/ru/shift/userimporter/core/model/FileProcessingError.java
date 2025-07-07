@@ -1,6 +1,5 @@
 package ru.shift.userimporter.core.model;
 
-import java.util.Date;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -12,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import ru.shift.userimporter.core.model.UsersFile;
 
 @Entity
 @Table(name = "file_processing_errors")

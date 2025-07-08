@@ -1,6 +1,7 @@
 package ru.shift.userimporter.api.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,9 @@ public class FilesController{
 
 	@GetMapping("/statistics")
 	public List<FileInfoDto> getStatistics(@RequestParam("status") FileStatus status){
-		return usersFileMapper.listOfUsersFilesToListOfFileInfoDtos(fileService.getByStatus(status.name()));
+		return fileService.getByStatus(status.name()).stream()
+			.map(usersFile ->{
+				return usersFileMapper.toFileInfoDto(usersFile);
+			}).collect(Collectors.toList());
 	}
 }

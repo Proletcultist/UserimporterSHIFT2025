@@ -7,11 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FilesStorageException;
 import ru.shift.userimporter.core.exception.FilesStorageInvalidFilenameException;
+import ru.shift.userimporter.core.exception.InvalidFileStatusException;
 import ru.shift.userimporter.api.dto.ErrorDto;
 
 @RestControllerAdvice
@@ -55,8 +58,26 @@ public class GlobalExceptionHandler{
 
 	@ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto notAMultipart(HttpRequestMethodNotSupportedException e){
+	public ErrorDto methodNotAllowed(HttpRequestMethodNotSupportedException e){
 		return new ErrorDto("Method not allowed");
+	}
+
+	@ExceptionHandler(value = MissingServletRequestParameterException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorDto missingQueryParam(MissingServletRequestParameterException e){
+		return new ErrorDto(e.getMessage());
+	}
+
+	@ExceptionHandler(value = InvalidFileStatusException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorDto invalidFileStatus(InvalidFileStatusException e){
+		return new ErrorDto(e.getMessage());
+	}
+
+	@ExceptionHandler(value = NoHandlerFoundException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ErrorDto noHandler(NoHandlerFoundException e){
+		return new ErrorDto("Not found");
 	}
 
 	/*

@@ -102,7 +102,7 @@ public class FileService{
 
 		// Inserting new entry for this file into DB
 		UsersFile newEntry = UsersFile.builder()
-			.id(null)
+			.id(0)
 			.insertedRows(0)
 			.updatedRows(0)
 			.originalFilename(file.getOriginalFilename())

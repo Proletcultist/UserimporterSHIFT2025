@@ -23,13 +23,13 @@ public class FileProcessingError{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private long id;
 
 	@Column(name = "file_id")
-	private Integer fileId;
+	private long fileId;
 
 	@Column(name = "row_number")
-	private Integer rowNumber;
+	private int rowNumber;
 
 	@Column(name = "error_message")
 	private String errorMessage;

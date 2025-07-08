@@ -28,13 +28,13 @@ public class UsersFile{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private long id;
 
 	@Column(name = "inserted_rows")
-	private Integer insertedRows;
+	private int insertedRows;
 
 	@Column(name = "updated_rows")
-	private Integer updatedRows;
+	private int updatedRows;
 
 	@Column(name = "original_filename")
 	private String originalFilename;

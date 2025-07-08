@@ -5,4 +5,4 @@ import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.core.model.User;
 
 @Repository
-public interface UsersRepository extends JpaRepository<User, Integer>{}
+public interface UsersRepository extends JpaRepository<User, Long>{}

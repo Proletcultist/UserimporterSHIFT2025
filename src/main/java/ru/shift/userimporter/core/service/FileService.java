@@ -14,10 +14,6 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.annotation.PreDestroy;
-import com.google.common.hash.Funnels;
-import com.google.common.io.ByteStreams;
-import com.google.common.hash.Hashing;
-import com.google.common.hash.Hasher;
 import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
@@ -27,6 +23,7 @@ import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
+import ru.shift.userimporter.core.util.MultipartFileUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -51,45 +48,19 @@ public class FileService{
 
 		// Hashing file
 		String hash;
-
-		try (InputStream inputStream = file.getInputStream()){
-			Hasher hasher = Hashing.murmur3_128().newHasher();
-			ByteStreams.copy(inputStream, Funnels.asOutputStream(hasher));
-			hash = hasher.hash().toString();
+		try{
+			hash = MultipartFileUtils.hashMultipartFile(file);
 		}
 		catch (IOException e){
 			throw new FileServiceException("Failed hashing uploaded file");
 		}
 
 		// Check if this file is already exists
-		boolean foundEqual = false;
-		for (UsersFile uploadedFile : uploadedFiles.findByHash(hash)){
-			if (uploadedFile.getHash().equals(hash)){
-				try (InputStream uploadedFileIS = new FileInputStream(uploadedFile.getStoragePath());
-						InputStream fileIS = file.getInputStream()){
-
-					if (IOUtils.contentEquals(uploadedFileIS, fileIS)){
-						foundEqual = true;
-						break;
-					}	
-
-				}
-				catch (FileNotFoundException e){
-					throw new FileServiceException("Failed to open stored file");
-				}
-				catch (IOException e){
-					throw new FileServiceException("Failed when comparing new and stored file");
-				}
-			}
-		}
-
-		if (foundEqual){
+		if (repositoryContainsFile(file, hash)){
 			throw new FileServiceFileAlreadyExistException("File already exist");
 		}
 
-		long currentTime = Instant.now().getEpochSecond();
-
-		String storingFilename = hash + "_" + String.valueOf(currentTime);
+		String storingFilename = generateStoringFilename(hash);
 
 		// Storing file
 		Path storedFile;
@@ -134,6 +105,37 @@ public class FileService{
 			}
 		}
 		// Run ProcessFileRunnable in pool
+	}
+
+	// Needs precalculated file hash
+	private boolean repositoryContainsFile(MultipartFile file, String hash){
+
+		for (UsersFile uploadedFile : uploadedFiles.findByHash(hash)){
+			if (uploadedFile.getHash().equals(hash)){
+				try (InputStream uploadedFileIS = new FileInputStream(uploadedFile.getStoragePath());
+						InputStream fileIS = file.getInputStream()){
+
+					if (IOUtils.contentEquals(uploadedFileIS, fileIS)){
+						return true;
+					}	
+
+				}
+				catch (FileNotFoundException e){
+					throw new FileServiceException("Failed to open stored file");
+				}
+				catch (IOException e){
+					throw new FileServiceException("Failed when comparing new and stored file");
+				}
+			}
+		}
+
+		return false;
+	}
+
+	// Needs precalculated file hash
+	private String generateStoringFilename(String hash){
+		long currentTime = Instant.now().getEpochSecond();
+		return hash + "_" + String.valueOf(currentTime);
 	}
 
 	@PreDestroy

@@ -8,36 +8,36 @@ import java.nio.file.Paths;
 import java.nio.file.InvalidPathException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ru.shift.userimporter.config.FilesStorageProperties;
-import ru.shift.userimporter.core.exception.FilesStorageException;
-import ru.shift.userimporter.core.exception.FilesStorageInvalidFilenameException;
+import ru.shift.userimporter.config.FileStorageProperties;
+import ru.shift.userimporter.core.exception.FileStorageException;
+import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
 
 @Repository
-public class FilesStorage{
+public class FileStorage{
 	private final Path rootLocation;
 
 	@Autowired
-	public FilesStorage(FilesStorageProperties properties) throws FilesStorageException{
+	public FileStorage(FileStorageProperties properties) throws FileStorageException{
 		try{
 			rootLocation = Paths.get(properties.getLocation()).normalize().toAbsolutePath();
 			Files.createDirectories(rootLocation);
 		}
 		catch (InvalidPathException e){
-			throw new FilesStorageException("String \""+properties.getLocation()+"\" cannot be converted to Path", e);
+			throw new FileStorageException("String \""+properties.getLocation()+"\" cannot be converted to Path", e);
 		}
 		catch (IOException e){
-			throw new FilesStorageException("Could not initialize storage", e);
+			throw new FileStorageException("Could not initialize storage", e);
 		}
 	}
 
-	public Path store(InputStream file, String filename) throws FilesStorageException,
-	       								FilesStorageInvalidFilenameException{
+	public Path store(InputStream file, String filename) throws FileStorageException,
+	       								FileStorageInvalidFilenameException{
 		Path pathedFilename;
 		try{
 			pathedFilename = Paths.get(filename);
 		}
 		catch (InvalidPathException e){
-			throw new FilesStorageInvalidFilenameException("Invalid filename", e);
+			throw new FileStorageInvalidFilenameException("Invalid filename", e);
 		}
 
 
@@ -45,7 +45,7 @@ public class FilesStorage{
 				.normalize().toAbsolutePath();
 
 		if (!destination.getParent().equals(rootLocation)){
-			throw new FilesStorageInvalidFilenameException("Cannot store file outside appropriate directory");
+			throw new FileStorageInvalidFilenameException("Cannot store file outside appropriate directory");
 		}
 
 
@@ -53,7 +53,7 @@ public class FilesStorage{
 			Files.copy(file, destination);
 		}
 		catch(IOException e){
-			throw new FilesStorageException("Failed to store file", e);
+			throw new FileStorageException("Failed to store file", e);
 		}
 
 		return destination;

@@ -9,7 +9,7 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "storage")
 @Getter
 @Setter
-public class FilesStorageProperties{
+public class FileStorageProperties{
 
 	private String location;
 

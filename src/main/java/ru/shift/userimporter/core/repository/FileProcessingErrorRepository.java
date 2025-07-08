@@ -5,4 +5,4 @@ import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.core.model.FileProcessingError;
 
 @Repository
-public interface FileProcessingErrorsRepository extends JpaRepository<FileProcessingError, Long>{}
+public interface FileProcessingErrorRepository extends JpaRepository<FileProcessingError, Long>{}

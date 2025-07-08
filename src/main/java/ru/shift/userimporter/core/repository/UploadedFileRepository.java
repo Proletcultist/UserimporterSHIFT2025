@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.core.model.UsersFile;
 
 @Repository
-public interface UploadedFilesRepository extends JpaRepository<UsersFile, Long>{
+public interface UploadedFileRepository extends JpaRepository<UsersFile, Long>{
 	Iterable<UsersFile> findByHash(String hash);
 
 	@Query("SELECT f FROM UsersFile f LEFT JOIN FETCH f.errors WHERE f.status = :status")

@@ -13,24 +13,23 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.exception.FileServiceException;
-import ru.shift.userimporter.core.exception.FilesStorageException;
-import ru.shift.userimporter.core.exception.FilesStorageInvalidFilenameException;
-import ru.shift.userimporter.core.exception.InvalidFileStatusException;
+import ru.shift.userimporter.core.exception.FileStorageException;
+import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
 import ru.shift.userimporter.api.dto.ErrorDto;
 import ru.shift.userimporter.api.dto.FileStatus;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
 
-	@ExceptionHandler(value = FilesStorageInvalidFilenameException.class)
+	@ExceptionHandler(value = FileStorageInvalidFilenameException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto invalidFilename(FilesStorageInvalidFilenameException e){
+	public ErrorDto invalidFilename(FileStorageInvalidFilenameException e){
 		return new ErrorDto(e.getMessage());
 	}
 	
-	@ExceptionHandler(value = FilesStorageException.class)
+	@ExceptionHandler(value = FileStorageException.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ErrorDto storageError(FilesStorageException e){
+	public ErrorDto storageError(FileStorageException e){
 		return new ErrorDto(e.getMessage());
 	}
 
@@ -67,12 +66,6 @@ public class GlobalExceptionHandler{
 	@ExceptionHandler(value = MissingServletRequestParameterException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ErrorDto missingQueryParam(MissingServletRequestParameterException e){
-		return new ErrorDto(e.getMessage());
-	}
-
-	@ExceptionHandler(value = InvalidFileStatusException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto invalidFileStatus(InvalidFileStatusException e){
 		return new ErrorDto(e.getMessage());
 	}
 

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
@@ -17,18 +18,19 @@ import ru.shift.userimporter.core.exception.InvalidFileStatusException;
 
 @RestController
 @RequiredArgsConstructor
-public class UserImporterController{
+@RequestMapping("/files")
+public class FilesController{
 
 	private final FileService fileService;
 	private final UsersFileMapper usersFileMapper;
 
-	@PostMapping("/files")
+	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public PostFileResponseDto postFile(@RequestParam("file") MultipartFile file){
 		return usersFileMapper.usersFileToPostFileResponseDto(fileService.storeUsersFile(file));
 	}
 
-	@GetMapping("/files/statistics")
+	@GetMapping("/statistics")
 	public List<FileInfoDto> getStatistics(@RequestParam("status") String status){
 		// Check if status is allowed
 		if (!(status.equals("NEW") || status.equals("IN_PROGRESS") || status.equals("DONE") || status.equals("FAILED"))){

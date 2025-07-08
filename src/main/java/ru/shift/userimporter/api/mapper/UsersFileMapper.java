@@ -9,6 +9,7 @@ import ru.shift.userimporter.api.dto.PostFileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
 import ru.shift.userimporter.api.dto.FileStatistics;
 import ru.shift.userimporter.core.model.UsersFile;
+import ru.shift.userimporter.api.dto.FileStatus;
 
 @Mapper(componentModel = "spring")
 public interface UsersFileMapper{
@@ -19,7 +20,7 @@ public interface UsersFileMapper{
 	default FileInfoDto usersFileToFileInfoDto(UsersFile usersFile){
 		return FileInfoDto.builder()
 			.fileId(String.valueOf(usersFile.getId()))
-			.status(usersFile.getStatus())
+			.status(FileStatus.valueOf(usersFile.getStatus()))
 			.statistic(
 					FileStatistics.builder()
 					.insertedLinesCount(usersFile.getInsertedRows())

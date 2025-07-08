@@ -15,6 +15,7 @@ import ru.shift.userimporter.api.dto.FileInfoDto;
 import ru.shift.userimporter.core.service.FileService;
 import ru.shift.userimporter.api.mapper.UsersFileMapper;
 import ru.shift.userimporter.core.exception.InvalidFileStatusException;
+import ru.shift.userimporter.api.dto.FileStatus;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,11 +32,7 @@ public class FilesController{
 	}
 
 	@GetMapping("/statistics")
-	public List<FileInfoDto> getStatistics(@RequestParam("status") String status){
-		// Check if status is allowed
-		if (!(status.equals("NEW") || status.equals("IN_PROGRESS") || status.equals("DONE") || status.equals("FAILED"))){
-			throw new InvalidFileStatusException("Invalid file status");
-		}
-		return usersFileMapper.listOfUsersFilesToListOfFileInfoDtos(fileService.getByStatus(status));
+	public List<FileInfoDto> getStatistics(@RequestParam("status") FileStatus status){
+		return usersFileMapper.listOfUsersFilesToListOfFileInfoDtos(fileService.getByStatus(status.name()));
 	}
 }

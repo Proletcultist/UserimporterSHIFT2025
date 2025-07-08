@@ -9,6 +9,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.exception.FileServiceException;
@@ -16,6 +17,7 @@ import ru.shift.userimporter.core.exception.FilesStorageException;
 import ru.shift.userimporter.core.exception.FilesStorageInvalidFilenameException;
 import ru.shift.userimporter.core.exception.InvalidFileStatusException;
 import ru.shift.userimporter.api.dto.ErrorDto;
+import ru.shift.userimporter.api.dto.FileStatus;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
@@ -78,6 +80,17 @@ public class GlobalExceptionHandler{
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public ErrorDto noHandler(NoHandlerFoundException e){
 		return new ErrorDto("Not found");
+	}
+
+	@ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorDto argumentTypeMismatch(MethodArgumentTypeMismatchException e){
+		if (e.getParameter().getParameterType() == FileStatus.class){
+			return new ErrorDto("Invalid file status");
+		}
+		else{
+			return new ErrorDto("Mismatching type of parameter");
+		}
 	}
 
 	/*

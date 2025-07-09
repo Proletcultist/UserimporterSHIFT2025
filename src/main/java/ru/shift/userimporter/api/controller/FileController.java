@@ -35,9 +35,8 @@ public class FileController{
 	@GetMapping("/statistics")
 	public List<FileInfoDto> getStatistics(@RequestParam("status") FileStatus status){
 		return fileService.getByStatus(status.name()).stream()
-			.map(usersFile ->{
-				return usersFileMapper.toFileInfoDto(usersFile);
-			}).collect(Collectors.toList());
+			.map(usersFile -> usersFileMapper.toFileInfoDto(usersFile)
+			).collect(Collectors.toList());
 	}
 
 	@PostMapping("/{fileId}/processing")

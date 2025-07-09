@@ -29,7 +29,7 @@ public class FileController{
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public PostFileResponseDto postFile(@RequestParam("file") MultipartFile file){
-		return usersFileMapper.usersFileToPostFileResponseDto(fileService.storeUsersFile(file));
+		return usersFileMapper.toPostFileResponseDto(fileService.storeUsersFile(file));
 	}
 
 	@GetMapping("/statistics")

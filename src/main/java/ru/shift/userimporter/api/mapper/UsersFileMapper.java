@@ -14,7 +14,7 @@ import ru.shift.userimporter.api.dto.FileStatus;
 public interface UsersFileMapper{
 
 	@Mapping(source = "id", target = "fileId") 
-	PostFileResponseDto usersFileToPostFileResponseDto(UsersFile usersFile);
+	PostFileResponseDto toPostFileResponseDto(UsersFile usersFile);
 
 	default FileInfoDto toFileInfoDto(UsersFile usersFile){
 		return FileInfoDto.builder()

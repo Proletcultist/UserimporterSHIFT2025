@@ -8,7 +8,7 @@ import ru.shift.userimporter.api.dto.PostFileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
 import ru.shift.userimporter.api.dto.FileStatisticsDto;
 import ru.shift.userimporter.core.model.UsersFile;
-import ru.shift.userimporter.api.dto.FileStatus;
+import ru.shift.userimporter.core.model.FileStatus;
 
 @Mapper(componentModel = "spring")
 public interface UsersFileMapper{

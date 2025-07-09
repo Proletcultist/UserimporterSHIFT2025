@@ -3,7 +3,7 @@ package ru.shift.userimporter.api.dto;
 import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ru.shift.userimporter.api.dto.FileStatisticsDto;
-import ru.shift.userimporter.api.dto.FileStatus;
+import ru.shift.userimporter.core.model.FileStatus;
 
 @Builder
 public record FileInfoDto(

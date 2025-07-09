@@ -1,4 +1,4 @@
-package ru.shift.userimporter.api.dto;
+package ru.shift.userimporter.core.model;
 
 public enum FileStatus{
 	NEW,

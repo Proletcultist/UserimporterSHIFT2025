@@ -16,7 +16,7 @@ import ru.shift.userimporter.api.dto.PostFileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
 import ru.shift.userimporter.core.service.FileService;
 import ru.shift.userimporter.api.mapper.UsersFileMapper;
-import ru.shift.userimporter.api.dto.FileStatus;
+import ru.shift.userimporter.core.model.FileStatus;
 
 @RestController
 @RequiredArgsConstructor

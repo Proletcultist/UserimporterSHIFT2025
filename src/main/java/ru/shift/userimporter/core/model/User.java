@@ -1,6 +1,7 @@
 package ru.shift.userimporter.core.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User{
@@ -38,11 +41,11 @@ public class User{
 	private String phone;
 
 	@Column(name = "birth_date")
-	private Date birthDate;
+	private LocalDate birthDate;
 
 	@Column(name = "created_at")
-	private Date createdAt;
+	private LocalDateTime createdAt;
 
 	@Column(name = "updated_at")
-	private Date updatedAt;
+	private LocalDateTime updatedAt;
 }

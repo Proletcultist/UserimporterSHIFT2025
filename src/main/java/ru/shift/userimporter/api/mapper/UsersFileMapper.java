@@ -1,7 +1,5 @@
 package ru.shift.userimporter.api.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.shift.userimporter.api.dto.FileResponseDto;

@@ -1,6 +1,5 @@
 package ru.shift.userimporter.core.service;
 
-import java.util.Optional;
 import java.util.List;
 import java.io.InputStream;
 import java.io.File;
@@ -24,8 +23,8 @@ import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
 import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
-import ru.shift.userimporter.core.util.MultipartFileUtils;
 import ru.shift.userimporter.core.exception.FileServiceNoSuchFileException;
+import ru.shift.userimporter.core.util.MultipartFileUtils;
 import ru.shift.userimporter.core.service.UserService;
 import ru.shift.userimporter.core.exception.UserValidationException;
 import ru.shift.userimporter.core.model.User;

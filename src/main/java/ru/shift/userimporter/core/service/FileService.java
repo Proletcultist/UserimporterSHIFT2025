@@ -1,19 +1,20 @@
 package ru.shift.userimporter.core.service;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Optional;
 import java.util.List;
-import java.lang.Runnable;
 import java.io.InputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.BufferedReader;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import jakarta.annotation.PreDestroy;
+import org.springframework.scheduling.annotation.Async;
 import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
@@ -24,6 +25,11 @@ import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.util.MultipartFileUtils;
+import ru.shift.userimporter.core.exception.FileServiceNoSuchFileException;
+import ru.shift.userimporter.core.service.UserService;
+import ru.shift.userimporter.core.exception.UserValidationException;
+import ru.shift.userimporter.core.model.User;
+import ru.shift.userimporter.core.model.FileProcessingError;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +38,7 @@ public class FileService{
 	private final FileStorage storage;
 	private final UploadedFileRepository uploadedFiles;
 	private final FileProcessingErrorRepository processingErrors;
-	private final ExecutorService threadPool = Executors.newCachedThreadPool();
+	private final UserService userService;
 
 	// Loads file to local storage
 	// File is named according to its' hash and current timestamp
@@ -90,21 +96,65 @@ public class FileService{
 	}
 
 	// Search for file in DB
-	// Check if file is existing
-	// Starts processing in new thread in pool
-	public void startFileProcessing(UsersFile searchReq){
+	// Starts processing
+	public void startFileProcessing(long fileId){
 
+		UsersFile file = uploadedFiles.findById(fileId).orElseThrow(() -> new FileServiceNoSuchFileException("File doesn't exist"));
 
-		class ProcessFileRunnable implements Runnable{
-			// Processes file row by row
-			// If row processed successfully, adds new user or updates existing one
-			// If row processed unsuccessfully, adds info about error to DB
-			// Collects statistic and updates file info in DB afterwords
-			@Override
-			public void run(){
+		processFile(file);
+
+	}
+
+	@Async
+	private void processFile(UsersFile file){
+
+		uploadedFiles.updateStatus("IN_PROGRESS", file.getId());
+
+		String line;
+		int lineNumber = 0, inserted = 0, updated = 0;
+		try (BufferedReader reader = new BufferedReader(new FileReader(new File(file.getStoragePath())))){
+			while ((line = reader.readLine()) != null){
+				User newUser;
+
+				try{
+					newUser = userService.parseUser(line);
+				}
+				catch (UserValidationException e){
+					processingErrors.save(FileProcessingError.builder()
+								.id(0)
+								.fileId(file.getId())
+								.rowNumber(lineNumber)
+								.errorMessage(e.getMessage())
+								.errorCode(e.getErrorCode())
+								.rawData(line)
+								.build()
+								);
+					continue;
+				}
+
+				LocalDateTime now = LocalDateTime.now();
+
+				newUser.setCreatedAt(now);
+				newUser.setUpdatedAt(now);
+
+				User userInRepo = userService.updateUser(newUser);
+
+				if (userInRepo.getCreatedAt().isEqual(userInRepo.getUpdatedAt())){
+					inserted++;
+				}
+				else{
+					updated++;
+				}
+
+				lineNumber++;
 			}
 		}
-		// Run ProcessFileRunnable in pool
+		catch (IOException e){
+			uploadedFiles.updateStatus("FAILED", file.getId());
+		}
+
+		uploadedFiles.updateRowsInfo(inserted, updated, file.getId());
+		uploadedFiles.updateStatus("DONE", file.getId());
 	}
 
 	// Needs precalculated file hash
@@ -136,11 +186,6 @@ public class FileService{
 	private String generateStoringFilename(String hash){
 		long currentTime = Instant.now().getEpochSecond();
 		return hash + "_" + String.valueOf(currentTime);
-	}
-
-	@PreDestroy
-	public void cleanup(){
-		threadPool.shutdown();
 	}
 }
 

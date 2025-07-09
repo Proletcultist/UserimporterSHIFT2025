@@ -20,6 +20,7 @@ import ru.shift.userimporter.core.exception.FileStorageException;
 import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
 import ru.shift.userimporter.api.dto.ErrorDto;
 import ru.shift.userimporter.api.dto.FileStatus;
+import ru.shift.userimporter.core.exception.FileServiceNoSuchFileException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
@@ -45,6 +46,12 @@ public class GlobalExceptionHandler{
 	@ExceptionHandler(value = FileServiceFileAlreadyExistException.class)
 	@ResponseStatus(value = HttpStatus.CONFLICT)
 	public ErrorDto fileAlreadyExist(FileServiceFileAlreadyExistException e){
+		return new ErrorDto(e.getMessage());
+	}
+
+	@ExceptionHandler(value = FileServiceNoSuchFileException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND)
+	public ErrorDto fileNotFound(FileServiceNoSuchFileException e){
 		return new ErrorDto(e.getMessage());
 	}
 
@@ -93,6 +100,7 @@ public class GlobalExceptionHandler{
 			return new ErrorDto("Invalid type of parameter \"" + e.getName() + "\", expected type: " + e.getRequiredType().getSimpleName());
 		}
 	}
+
 
 	/*
 	@ExceptionHandler(value = Exception.class)

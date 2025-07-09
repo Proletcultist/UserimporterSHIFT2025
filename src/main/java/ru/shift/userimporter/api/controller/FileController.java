@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
-import ru.shift.userimporter.api.dto.PostFileResponseDto;
+import ru.shift.userimporter.api.dto.FileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
 import ru.shift.userimporter.core.service.FileService;
 import ru.shift.userimporter.api.mapper.UsersFileMapper;
@@ -28,8 +28,8 @@ public class FileController{
 
 	@PostMapping
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public PostFileResponseDto postFile(@RequestParam("file") MultipartFile file){
-		return usersFileMapper.toPostFileResponseDto(fileService.storeUsersFile(file));
+	public FileResponseDto postFile(@RequestParam("file") MultipartFile file){
+		return usersFileMapper.toFileResponseDto(fileService.storeUsersFile(file));
 	}
 
 	@GetMapping("/statistics")

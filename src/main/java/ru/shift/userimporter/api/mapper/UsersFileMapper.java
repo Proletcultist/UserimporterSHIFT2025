@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.shift.userimporter.api.dto.PostFileResponseDto;
+import ru.shift.userimporter.api.dto.FileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
 import ru.shift.userimporter.api.dto.FileStatisticsDto;
 import ru.shift.userimporter.core.model.UsersFile;
@@ -14,7 +14,7 @@ import ru.shift.userimporter.core.model.FileStatus;
 public interface UsersFileMapper{
 
 	@Mapping(source = "id", target = "fileId") 
-	PostFileResponseDto toPostFileResponseDto(UsersFile usersFile);
+	FileResponseDto toFileResponseDto(UsersFile usersFile);
 
 	default FileInfoDto toFileInfoDto(UsersFile usersFile){
 		return FileInfoDto.builder()

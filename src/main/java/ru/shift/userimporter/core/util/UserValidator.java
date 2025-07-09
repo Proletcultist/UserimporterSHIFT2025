@@ -4,9 +4,14 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import ru.shift.userimporter.core.exception.UserValidationException;
+import ru.shift.userimporter.core.model.RawUser;
 
 //TODO: Replace all String.matches() calls with private final Patterns, compiled on initialization of instance and Matcher.matches() calls
 public class UserValidator{
+
+	public static void validateRawUser(RawUser user) throws UserValidationException{
+	}
+
 	private static void validateFirstName(String name) throws UserValidationException{
 		if (name.length() < 3 || name.length() > 50){
 			throw new UserValidationException("Length must be from 3 to 50 characters", "INVALID_NAME");

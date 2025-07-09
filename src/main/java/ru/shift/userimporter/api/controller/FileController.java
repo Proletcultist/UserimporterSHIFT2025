@@ -21,7 +21,7 @@ import ru.shift.userimporter.api.dto.FileStatus;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files")
-public class FilesController{
+public class FileController{
 
 	private final FileService fileService;
 	private final UsersFileMapper usersFileMapper;

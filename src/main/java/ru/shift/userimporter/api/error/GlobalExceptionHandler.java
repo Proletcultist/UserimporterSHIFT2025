@@ -10,6 +10,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
 import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
 import ru.shift.userimporter.core.exception.FileServiceException;
@@ -78,11 +81,16 @@ public class GlobalExceptionHandler{
 	@ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ErrorDto argumentTypeMismatch(MethodArgumentTypeMismatchException e){
-		if (e.getParameter().getParameterType() == FileStatus.class){
-			return new ErrorDto("Invalid file status");
+		if (e.getParameter().getAnnotatedElement().getAnnotation(RequestParam.class) != null){
+			RequestParam param = (RequestParam)e.getParameter().getAnnotatedElement().getAnnotation(RequestParam.class);
+			return new ErrorDto("Invalid type of parameter \"" + param.name() + "\", expected type: " + e.getRequiredType().getSimpleName());
+		}
+		else if(e.getParameter().getAnnotatedElement().getAnnotation(PathVariable.class) != null){
+			PathVariable param = (PathVariable)e.getParameter().getAnnotatedElement().getAnnotation(RequestParam.class);
+			return new ErrorDto("Invalid type of parameter \"" + param.name() + "\", expected type: " + e.getRequiredType().getSimpleName());
 		}
 		else{
-			return new ErrorDto("Mismatching type of parameter");
+			return new ErrorDto("Invalid type of parameter \"" + e.getName() + "\", expected type: " + e.getRequiredType().getSimpleName());
 		}
 	}
 

@@ -27,7 +27,4 @@ public class UserService{
 	}
 	*/
 
-	private void validateRawUser(RawUser user) throws UserValidationException{
-	}
-
 }

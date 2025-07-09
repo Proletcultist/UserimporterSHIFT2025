@@ -16,6 +16,12 @@ public class UserValidator{
 	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public static void validateRawUser(RawUser user) throws UserValidationException{
+		validateFirstName(user.firstName());
+		validateLastName(user.lastName());
+		validateMiddleName(user.middleName());
+		validateEmail(user.email());
+		validatePhone(user.phone());
+		validateBirthDate(user.birthDate());
 	}
 
 	private static void validateFirstName(String name) throws UserValidationException{

@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.shift.userimporter.api.dto.PostFileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
-import ru.shift.userimporter.api.dto.FileStatistics;
+import ru.shift.userimporter.api.dto.FileStatisticsDto;
 import ru.shift.userimporter.core.model.UsersFile;
 import ru.shift.userimporter.api.dto.FileStatus;
 
@@ -21,7 +21,7 @@ public interface UsersFileMapper{
 			.fileId(String.valueOf(usersFile.getId()))
 			.status(FileStatus.valueOf(usersFile.getStatus()))
 			.statistic(
-					FileStatistics.builder()
+					FileStatisticsDto.builder()
 					.insertedLinesCount(usersFile.getInsertedRows())
 					.updatedLinesCount(usersFile.getUpdatedRows())
 					.errorProcessedLinesCount(usersFile.getErrors().size())

@@ -79,17 +79,7 @@ public class GlobalExceptionHandler{
 	@ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	public ErrorDto argumentTypeMismatch(MethodArgumentTypeMismatchException e){
-		if (e.getParameter().getAnnotatedElement().getAnnotation(RequestParam.class) != null){
-			RequestParam param = (RequestParam)e.getParameter().getAnnotatedElement().getAnnotation(RequestParam.class);
-			return new ErrorDto("Invalid type of parameter \"" + param.name() + "\", expected type: " + e.getRequiredType().getSimpleName());
-		}
-		else if(e.getParameter().getAnnotatedElement().getAnnotation(PathVariable.class) != null){
-			PathVariable param = (PathVariable)e.getParameter().getAnnotatedElement().getAnnotation(RequestParam.class);
-			return new ErrorDto("Invalid type of parameter \"" + param.name() + "\", expected type: " + e.getRequiredType().getSimpleName());
-		}
-		else{
-			return new ErrorDto("Invalid type of parameter \"" + e.getName() + "\", expected type: " + e.getRequiredType().getSimpleName());
-		}
+		return new ErrorDto("Invalid type of paramter");
 	}
 
 	@ExceptionHandler(value = MethodArgumentNotValidException.class)

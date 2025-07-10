@@ -6,7 +6,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
@@ -33,16 +32,12 @@ public class UsersFile{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(name = "inserted_rows")
 	private int insertedRows;
 
-	@Column(name = "updated_rows")
 	private int updatedRows;
 
-	@Column(name = "original_filename")
 	private String originalFilename;
 
-	@Column(name = "storage_path")
 	private String storagePath;
 
 	@Enumerated(EnumType.STRING)

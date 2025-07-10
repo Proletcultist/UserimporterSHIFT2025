@@ -25,18 +25,17 @@ public class FileProcessingError{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	// This one doesn't working, can't really figure out why
+	// Error says, what where are two logical columns,
+	// reffering to one column in DB "file_id", but there is only one...
 	@Column(name = "file_id")
 	private long fileId;
 
-	@Column(name = "row_number")
 	private int rowNumber;
 
-	@Column(name = "error_message")
 	private String errorMessage;
 
-	@Column(name = "error_code")
 	private String errorCode;
 
-	@Column(name = "raw_data")
 	private String rawData;
 }

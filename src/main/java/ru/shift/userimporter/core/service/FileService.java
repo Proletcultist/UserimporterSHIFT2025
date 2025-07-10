@@ -2,33 +2,28 @@ package ru.shift.userimporter.core.service;
 
 import java.util.List;
 import java.io.InputStream;
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.BufferedReader;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import static java.time.LocalDateTime.now;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
-import static ru.shift.userimporter.core.model.FileStatus.*;
 import ru.shift.userimporter.core.service.FileStorageService;
 import ru.shift.userimporter.core.repository.UploadedFileRepository;
 import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
 import ru.shift.userimporter.core.exception.UserImporterException;
 import ru.shift.userimporter.core.exception.ErrorCode;
+import static ru.shift.userimporter.core.model.FileStatus.*;
 import ru.shift.userimporter.core.util.MultipartFileUtils;
 import ru.shift.userimporter.core.service.UserService;
-import ru.shift.userimporter.core.model.User;
 import ru.shift.userimporter.core.model.FileProcessingError;
+import ru.shift.userimporter.core.service.FileProcessingService;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +31,7 @@ public class FileService{
 
 	private final FileStorageService storage;
 	private final UploadedFileRepository uploadedFileRepository;
-	private final FileProcessingErrorRepository errorRepository;
-	private final UserService userService;
+	private final FileProcessingService fileProcessingService;
 
 	// Loads file to local storage
 	// File is named according to its' hash and current timestamp
@@ -86,58 +80,8 @@ public class FileService{
 
 		UsersFile file = uploadedFileRepository.findById(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
 
-		processFile(file);
+		fileProcessingService.processFile(file);
 
-	}
-
-	@Async
-	private void processFile(UsersFile file){
-
-		uploadedFileRepository.updateStatus(IN_PROGRESS, file.getId());
-
-		String line;
-		int lineNumber = 1, inserted = 0, updated = 0;
-		try (BufferedReader reader = new BufferedReader(new FileReader(new File(file.getStoragePath())))){
-			while ((line = reader.readLine()) != null){
-				User newUser;
-
-				try{
-					newUser = userService.parseUser(line);
-				}
-				catch (UserImporterException e){
-					errorRepository.save(FileProcessingError.builder()
-								.fileId(file.getId())
-								.rowNumber(lineNumber)
-								.errorMessage(e.getMessage())
-								.errorCode(e.getErrorCode().name())
-								.rawData(line)
-								.build()
-								);
-					lineNumber++;
-					continue;
-				}
-
-				newUser.setCreatedAt(now());
-				newUser.setUpdatedAt(newUser.getCreatedAt());
-
-				User userInRepo = userService.updateUser(newUser);
-
-				if (userInRepo.getCreatedAt().isEqual(userInRepo.getUpdatedAt())){
-					inserted++;
-				}
-				else{
-					updated++;
-				}
-
-				lineNumber++;
-			}
-		}
-		catch (IOException e){
-			uploadedFileRepository.updateStatus(FAILED, file.getId());
-		}
-
-		uploadedFileRepository.updateRowsInfo(inserted, updated, file.getId());
-		uploadedFileRepository.updateStatus(DONE, file.getId());
 	}
 
 	private String calculateFileHash(MultipartFile file){

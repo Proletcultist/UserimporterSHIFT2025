@@ -47,7 +47,7 @@ public class FileService{
 
 		// Check if file is empty
 		if (file.isEmpty()){
-			throw new UserImporterException("Failed to store empty file", ErrorCode.INVALID_FILE);
+			throw new UserImporterException("File is empty", ErrorCode.INVALID_FILE);
 		}
 
 		String hash = calculateFileHash(file);

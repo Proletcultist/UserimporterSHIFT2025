@@ -22,7 +22,7 @@ public interface UsersFileMapper{
 	default FileInfoDto toFileInfoDto(UsersFile usersFile){
 		return FileInfoDto.builder()
 			.fileId(String.valueOf(usersFile.getId()))
-			.status(FileStatus.valueOf(usersFile.getStatus()))
+			.status(usersFile.getStatus())
 			.statistic(
 					FileStatisticsDto.builder()
 					.insertedLinesCount(usersFile.getInsertedRows())

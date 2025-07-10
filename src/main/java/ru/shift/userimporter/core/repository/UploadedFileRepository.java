@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.core.model.UsersFile;
+import ru.shift.userimporter.core.model.FileStatus;
 
 @Repository
 public interface UploadedFileRepository extends JpaRepository<UsersFile, Long>{
@@ -22,7 +23,7 @@ public interface UploadedFileRepository extends JpaRepository<UsersFile, Long>{
 	@Modifying
 	@Transactional
 	@Query("UPDATE UsersFile f SET f.status = :status WHERE f.id = :fileId")
-	void updateStatus(String status, long fileId);
+	void updateStatus(FileStatus status, long fileId);
 
 	@Modifying
 	@Transactional

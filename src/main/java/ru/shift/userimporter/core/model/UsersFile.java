@@ -10,12 +10,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 import ru.shift.userimporter.core.model.FileProcessingError;
+import ru.shift.userimporter.core.model.FileStatus;
 
 @Entity
 @Table(name = "uploaded_files")
@@ -42,7 +45,8 @@ public class UsersFile{
 	@Column(name = "storage_path")
 	private String storagePath;
 
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private FileStatus status;
 	private String hash;
 
 	@OneToMany(cascade = CascadeType.ALL)

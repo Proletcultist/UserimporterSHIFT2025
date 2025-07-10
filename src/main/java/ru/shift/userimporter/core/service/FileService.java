@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import static java.time.LocalDateTime.now;
 import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,10 +113,8 @@ public class FileService{
 					continue;
 				}
 
-				LocalDateTime now = LocalDateTime.now();
-
-				newUser.setCreatedAt(now);
-				newUser.setUpdatedAt(now);
+				newUser.setCreatedAt(now());
+				newUser.setUpdatedAt(newUser.getCreatedAt());
 
 				User userInRepo = userService.updateUser(newUser);
 

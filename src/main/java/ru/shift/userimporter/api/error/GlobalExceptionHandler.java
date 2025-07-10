@@ -18,7 +18,7 @@ import ru.shift.userimporter.core.exception.FileServiceException;
 import ru.shift.userimporter.core.exception.FileStorageException;
 import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
 import ru.shift.userimporter.api.dto.ErrorDto;
-import ru.shift.userimporter.api.dto.FileStatus;
+import ru.shift.userimporter.core.model.FileStatus;
 import ru.shift.userimporter.core.exception.FileServiceNoSuchFileException;
 
 @RestControllerAdvice

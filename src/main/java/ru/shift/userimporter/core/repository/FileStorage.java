@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.InvalidPathException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.config.FileStorageProperties;
 import ru.shift.userimporter.core.exception.FileStorageException;
@@ -16,7 +15,6 @@ import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
 public class FileStorage{
 	private final Path rootLocation;
 
-	@Autowired
 	public FileStorage(FileStorageProperties properties) throws FileStorageException{
 		try{
 			rootLocation = Paths.get(properties.getLocation()).normalize().toAbsolutePath();

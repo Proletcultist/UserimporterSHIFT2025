@@ -98,7 +98,7 @@ public class FileService{
 		uploadedFileRepository.updateStatus(FileStatus.IN_PROGRESS.name(), file.getId());
 
 		String line;
-		int lineNumber = 0, inserted = 0, updated = 0;
+		int lineNumber = 1, inserted = 0, updated = 0;
 		try (BufferedReader reader = new BufferedReader(new FileReader(new File(file.getStoragePath())))){
 			while ((line = reader.readLine()) != null){
 				User newUser;
@@ -115,6 +115,7 @@ public class FileService{
 								.rawData(line)
 								.build()
 								);
+					lineNumber++;
 					continue;
 				}
 

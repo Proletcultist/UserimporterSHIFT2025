@@ -1,5 +1,8 @@
 package ru.shift.userimporter.api.error;
 
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,8 +13,10 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.ResponseEntity;
 import ru.shift.userimporter.core.exception.UserImporterException;
 import ru.shift.userimporter.core.exception.ErrorCode;
@@ -87,6 +92,47 @@ public class GlobalExceptionHandler{
 		}
 	}
 
+	@ExceptionHandler(value = MethodArgumentNotValidException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorDto argumentNotValid(MethodArgumentNotValidException e){
+		Map<String, String> errors = new HashMap<>();
+		e.getBindingResult()
+			.getFieldErrors()
+			.forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+		return new ErrorDto(
+				errors.entrySet()
+					.stream()
+					.map(entry -> entry.getKey() + ": " + entry.getValue())
+					.collect(Collectors.joining(", "))
+				);
+
+	}
+
+	@ExceptionHandler(value = HandlerMethodValidationException.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	public ErrorDto argumentNotValid(HandlerMethodValidationException e){
+		Map<String, String> errors = new HashMap<>();
+
+		e.getParameterValidationResults()
+			.forEach(validationRes -> {
+				String param = validationRes.getMethodParameter().getParameterName();
+
+				String paramErrors = validationRes.getResolvableErrors().stream()
+									.map(error -> error.getDefaultMessage())
+									.collect(Collectors.joining(", "));
+				errors.put(param, paramErrors);
+				
+			});
+
+		return new ErrorDto(
+				errors.entrySet()
+					.stream()
+					.map(entry -> entry.getKey() + ": " + entry.getValue())
+					.collect(Collectors.joining("; "))
+				);
+
+	}
 
 	/*
 	@ExceptionHandler(value = Exception.class)

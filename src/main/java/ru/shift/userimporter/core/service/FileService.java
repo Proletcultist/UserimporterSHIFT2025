@@ -32,8 +32,8 @@ import ru.shift.userimporter.core.model.FileProcessingError;
 public class FileService{
 
 	private final FileStorageService storage;
-	private final UploadedFileRepository uploadedFiles;
-	private final FileProcessingErrorRepository processingErrors;
+	private final UploadedFileRepository uploadedFileRepository;
+	private final FileProcessingErrorRepository errorRepository;
 	private final UserService userService;
 
 	// Loads file to local storage
@@ -50,7 +50,7 @@ public class FileService{
 		String hash = calculateFileHash(file);
 
 		// Check if this file is already exists
-		if (repositoryContainsFile(file, hash)){
+		if (isFileAlreadyUploaded(file, hash)){
 			throw new UserImporterException(ErrorCode.FILE_ALREADY_EXISTS.getDefaultMessage(), ErrorCode.FILE_ALREADY_EXISTS);
 		}
 
@@ -67,18 +67,18 @@ public class FileService{
 			.hash(hash)
 			.build();
 
-		return uploadedFiles.save(newEntry);
+		return uploadedFileRepository.save(newEntry);
 	}
 
 	public List<UsersFile> getByStatus(String status){
-		return uploadedFiles.findByStatusWithErrors(status);
+		return uploadedFileRepository.findByStatusWithErrors(status);
 	}
 
 	// Search for file in DB
 	// Starts processing
 	public void startFileProcessing(long fileId){
 
-		UsersFile file = uploadedFiles.findById(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
+		UsersFile file = uploadedFileRepository.findById(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
 
 		processFile(file);
 
@@ -87,7 +87,7 @@ public class FileService{
 	@Async
 	private void processFile(UsersFile file){
 
-		uploadedFiles.updateStatus("IN_PROGRESS", file.getId());
+		uploadedFileRepository.updateStatus("IN_PROGRESS", file.getId());
 
 		String line;
 		int lineNumber = 0, inserted = 0, updated = 0;
@@ -99,7 +99,7 @@ public class FileService{
 					newUser = userService.parseUser(line);
 				}
 				catch (UserImporterException e){
-					processingErrors.save(FileProcessingError.builder()
+					errorRepository.save(FileProcessingError.builder()
 								.id(0)
 								.fileId(file.getId())
 								.rowNumber(lineNumber)
@@ -129,11 +129,11 @@ public class FileService{
 			}
 		}
 		catch (IOException e){
-			uploadedFiles.updateStatus("FAILED", file.getId());
+			uploadedFileRepository.updateStatus("FAILED", file.getId());
 		}
 
-		uploadedFiles.updateRowsInfo(inserted, updated, file.getId());
-		uploadedFiles.updateStatus("DONE", file.getId());
+		uploadedFileRepository.updateRowsInfo(inserted, updated, file.getId());
+		uploadedFileRepository.updateStatus("DONE", file.getId());
 	}
 
 	private String calculateFileHash(MultipartFile file){
@@ -155,9 +155,9 @@ public class FileService{
 	}
 
 	// Needs precalculated file hash
-	private boolean repositoryContainsFile(MultipartFile file, String hash){
+	private boolean isFileAlreadyUploaded(MultipartFile file, String hash){
 
-		for (UsersFile uploadedFile : uploadedFiles.findByHash(hash)){
+		for (UsersFile uploadedFile : uploadedFileRepository.findByHash(hash)){
 			if (uploadedFile.getHash().equals(hash)){
 				try (InputStream uploadedFileIS = new FileInputStream(uploadedFile.getStoragePath());
 						InputStream fileIS = file.getInputStream()){

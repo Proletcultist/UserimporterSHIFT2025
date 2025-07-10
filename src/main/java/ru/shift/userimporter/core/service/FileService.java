@@ -77,6 +77,11 @@ public class FileService{
 		return uploadedFileRepository.findByStatusWithErrors(status);
 	}
 
+	@Transactional(readOnly = true)
+	public UsersFile getById(long fileId){
+		return uploadedFileRepository.findByIdWithErrors(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
+	}
+
 	// Search for file in DB
 	// Starts processing
 	public void startFileProcessing(long fileId){

@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.api.dto.FileResponseDto;
 import ru.shift.userimporter.api.dto.FileInfoDto;
+import ru.shift.userimporter.api.dto.FileInfoDetailedDto;
 import ru.shift.userimporter.core.service.FileService;
 import ru.shift.userimporter.api.mapper.UsersFileMapper;
 import ru.shift.userimporter.core.model.FileStatus;
@@ -41,7 +43,12 @@ public class FileController{
 
 	@PostMapping("/{fileId}/processing")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void processFile(@PathVariable("fileId") Long fileId){
+	public void processFile(@PathVariable("fileId") @Positive Long fileId){
 		fileService.startFileProcessing(fileId.longValue());
+	}
+
+	@GetMapping("/{fileId}/statistics")
+	public FileInfoDetailedDto gitDetailedStatistics(@PathVariable("fileId") @Positive Long fileId){
+		return usersFileMapper.toFileInfoDetailedDto(fileService.getById(fileId));
 	}
 }

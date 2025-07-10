@@ -1,6 +1,7 @@
 package ru.shift.userimporter.core.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,6 +15,9 @@ public interface UploadedFileRepository extends JpaRepository<UsersFile, Long>{
 
 	@Query("SELECT f FROM UsersFile f LEFT JOIN FETCH f.errors WHERE f.status = :status")
 	List<UsersFile> findByStatusWithErrors(String status);
+
+	@Query("SELECT f FROM UsersFile f LEFT JOIN FETCH f.errors WHERE f.id = :fileId")
+	Optional<UsersFile> findByIdWithErrors(long fileId);
 
 	@Modifying
 	@Transactional

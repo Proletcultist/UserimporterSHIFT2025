@@ -14,6 +14,7 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
@@ -70,12 +71,14 @@ public class FileService{
 		return uploadedFileRepository.save(newEntry);
 	}
 
+	@Transactional(readOnly = true)
 	public List<UsersFile> getByStatus(String status){
 		return uploadedFileRepository.findByStatusWithErrors(status);
 	}
 
 	// Search for file in DB
 	// Starts processing
+	@Transactional(readOnly = true)
 	public void startFileProcessing(long fileId){
 
 		UsersFile file = uploadedFileRepository.findById(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
@@ -155,6 +158,7 @@ public class FileService{
 	}
 
 	// Needs precalculated file hash
+	@Transactional(readOnly = true)
 	private boolean isFileAlreadyUploaded(MultipartFile file, String hash){
 
 		for (UsersFile uploadedFile : uploadedFileRepository.findByHash(hash)){

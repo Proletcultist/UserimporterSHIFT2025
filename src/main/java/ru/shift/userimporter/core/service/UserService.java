@@ -75,7 +75,6 @@ public class UserService{
 
 	private User rawUserToUser(RawUser rawUser){
 		return User.builder()
-			.id(0)
 			.firstName(rawUser.firstName())
 			.lastName(rawUser.lastName())
 			.middleName(rawUser.middleName())

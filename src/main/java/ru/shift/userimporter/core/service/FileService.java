@@ -57,14 +57,14 @@ public class FileService{
 			throw new UserImporterException(ErrorCode.FILE_ALREADY_EXISTS.getDefaultMessage(), ErrorCode.FILE_ALREADY_EXISTS);
 		}
 
-		Path storedFile = saveFileToStorage(file, generateStoringFilename(hash));
+		Path storedFilePath = saveFileToStorage(file, generateStoringFilename(hash));
 
 		// Inserting new entry for this file into DB
 		UsersFile newEntry = UsersFile.builder()
 			.insertedRows(0)
 			.updatedRows(0)
 			.originalFilename(file.getOriginalFilename())
-			.storagePath(storedFile.toString())
+			.storagePath(storedFilePath.toString())
 			.status(NEW)
 			.hash(hash)
 			.build();

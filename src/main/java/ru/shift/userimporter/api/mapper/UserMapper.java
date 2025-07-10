@@ -10,8 +10,8 @@ import ru.shift.userimporter.api.dto.UserDto;
 @Component
 public class UserMapper{
 	
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	private final DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-ddEHH:mm:ss.SSS");
+	private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-ddEHH:mm:ss.SSS");
 
 	public UserDto toUserDto(User user){
 		return UserDto.builder()
@@ -20,9 +20,9 @@ public class UserMapper{
 			.lastName(user.getLastName())
 			.middleName(user.getMiddleName())
 			.email(user.getEmail())
-			.birthdate(user.getBirthDate().format(dateFormatter))
-			.creationTime(user.getCreatedAt().format(timestampFormatter))
-			.updateTime(user.getUpdatedAt().format(timestampFormatter))
+			.birthdate(user.getBirthDate().format(DATE_FORMATTER))
+			.creationTime(user.getCreatedAt().format(TIMESTAMP_FORMATTER))
+			.updateTime(user.getUpdatedAt().format(TIMESTAMP_FORMATTER))
 			.build();
 	}
 

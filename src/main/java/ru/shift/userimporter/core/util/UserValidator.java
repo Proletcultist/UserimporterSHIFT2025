@@ -11,11 +11,11 @@ import ru.shift.userimporter.core.model.UserSearchFilter;
 
 public class UserValidator{
 
-	private static final Pattern namesPattern = Pattern.compile("[а-яА-Я'\\- ]*");
-	private static final Pattern generalEmailPattern = Pattern.compile("[A-Za-z0-9._%\\-]+@[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+");
-	private static final Pattern shiftEmailPattern = Pattern.compile("[A-Za-z0-9._%\\-]+@(shift\\.com|shift\\.ru)");
-	private static final Pattern datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static final Pattern NAMES_PATTERN = Pattern.compile("[а-яА-Я'\\- ]*");
+	private static final Pattern GENERAL_EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%\\-]+@[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+");
+	private static final Pattern SHIFT_EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%\\-]+@(shift\\.com|shift\\.ru)");
+	private static final Pattern DATE_PATTERN = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public static void validateRawUser(RawUser user){
 		validateFirstName(user.firstName());
@@ -45,7 +45,7 @@ public class UserValidator{
 		if (name.length() < 3 || name.length() > 50){
 			throw new UserImporterException("Length must be from 3 to 50 characters", ErrorCode.INVALID_NAME);
 		}
-		else if (!namesPattern.matcher(name).matches()){
+		else if (!NAMES_PATTERN.matcher(name).matches()){
 			throw new UserImporterException("Invalid character", ErrorCode.INVALID_NAME);
 		}
 		else if (name.charAt(0) < 'А' || name.charAt(0) > 'Я'){
@@ -57,7 +57,7 @@ public class UserValidator{
 		if (name.length() < 3 || name.length() > 50){
 			throw new UserImporterException("Length must be from 3 to 50 characters", ErrorCode.INVALID_LAST_NAME);
 		}
-		else if (!namesPattern.matcher(name).matches()){
+		else if (!NAMES_PATTERN.matcher(name).matches()){
 			throw new UserImporterException("Invalid character", ErrorCode.INVALID_LAST_NAME);
 		}
 		else if (name.charAt(0) < 'А' || name.charAt(0) > 'Я'){
@@ -73,7 +73,7 @@ public class UserValidator{
 		if (name.length() < 3 || name.length() > 50){
 			throw new UserImporterException("Length must be from 3 to 50 characters", ErrorCode.INVALID_MIDDLE_NAME);
 		}
-		else if (!namesPattern.matcher(name).matches()){
+		else if (!NAMES_PATTERN.matcher(name).matches()){
 			throw new UserImporterException("Invalid character", ErrorCode.INVALID_MIDDLE_NAME);
 		}
 		else if (name.charAt(0) < 'А' || name.charAt(0) > 'Я'){
@@ -82,10 +82,10 @@ public class UserValidator{
 	}
 
 	private static void validateEmail(String email){
-		if (!generalEmailPattern.matcher(email).matches()){
+		if (!GENERAL_EMAIL_PATTERN.matcher(email).matches()){
 			throw new UserImporterException("Invalid email", ErrorCode.INVALID_EMAIL);
 		}
-		else if (!shiftEmailPattern.matcher(email).matches()){
+		else if (!SHIFT_EMAIL_PATTERN.matcher(email).matches()){
 			throw new UserImporterException("Invalid mail server, only shift.com and shift.ru are allowed", ErrorCode.INVALID_EMAIL);
 		}
 	}
@@ -100,11 +100,11 @@ public class UserValidator{
 	}
 
 	private static void validateBirthDate(String birthDateStr){
-		if (!datePattern.matcher(birthDateStr).matches()){
+		if (!DATE_PATTERN.matcher(birthDateStr).matches()){
 			throw new UserImporterException("Invalid birth date", ErrorCode.INVALID_BIRTHDATE);
 		}
 
-		LocalDate birthDate = LocalDate.parse(birthDateStr, dateFormatter);
+		LocalDate birthDate = LocalDate.parse(birthDateStr, DATE_FORMATTER);
 		LocalDate now = LocalDate.now();
 
 		if (!birthDate.isBefore(now)){

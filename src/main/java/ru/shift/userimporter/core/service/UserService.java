@@ -24,7 +24,7 @@ import ru.shift.userimporter.core.repository.OffsetBasedPageRequest;
 public class UserService{
 
 	private final UserRepository users;
-	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public User updateUser(User user){
 		return users.saveOrUpdate(user);
@@ -81,7 +81,7 @@ public class UserService{
 			.middleName(rawUser.middleName())
 			.email(rawUser.email())
 			.phone(rawUser.phone())
-			.birthDate(LocalDate.parse(rawUser.birthDate(), dateFormatter))
+			.birthDate(LocalDate.parse(rawUser.birthDate(), DATE_FORMATTER))
 			.createdAt(null)
 			.updatedAt(null)
 			.build();

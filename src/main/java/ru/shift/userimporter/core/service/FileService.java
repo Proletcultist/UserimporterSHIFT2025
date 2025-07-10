@@ -182,8 +182,7 @@ public class FileService{
 
 	// Needs precalculated file hash
 	private String generateStoringFilename(String hash){
-		long currentTime = Instant.now().getEpochSecond();
-		return hash + "_" + String.valueOf(currentTime);
+		return String.format("%s_%d.csv", hash, Instant.now().getEpochSecond());
 	}
 }
 

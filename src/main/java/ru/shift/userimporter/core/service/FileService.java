@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
+import ru.shift.userimporter.core.model.FileStatus;
 import ru.shift.userimporter.core.service.FileStorageService;
 import ru.shift.userimporter.core.repository.UploadedFileRepository;
 import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
@@ -64,7 +65,7 @@ public class FileService{
 			.updatedRows(0)
 			.originalFilename(file.getOriginalFilename())
 			.storagePath(storedFile.toString())
-			.status("NEW")
+			.status(FileStatus.NEW.name())
 			.hash(hash)
 			.build();
 
@@ -90,7 +91,7 @@ public class FileService{
 	@Async
 	private void processFile(UsersFile file){
 
-		uploadedFileRepository.updateStatus("IN_PROGRESS", file.getId());
+		uploadedFileRepository.updateStatus(FileStatus.IN_PROGRESS.name(), file.getId());
 
 		String line;
 		int lineNumber = 0, inserted = 0, updated = 0;
@@ -132,11 +133,11 @@ public class FileService{
 			}
 		}
 		catch (IOException e){
-			uploadedFileRepository.updateStatus("FAILED", file.getId());
+			uploadedFileRepository.updateStatus(FileStatus.FAILED.name(), file.getId());
 		}
 
 		uploadedFileRepository.updateRowsInfo(inserted, updated, file.getId());
-		uploadedFileRepository.updateStatus("DONE", file.getId());
+		uploadedFileRepository.updateStatus(FileStatus.DONE.name(), file.getId());
 	}
 
 	private String calculateFileHash(MultipartFile file){

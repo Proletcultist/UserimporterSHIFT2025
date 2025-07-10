@@ -23,11 +23,11 @@ import ru.shift.userimporter.core.repository.OffsetBasedPageRequest;
 @RequiredArgsConstructor
 public class UserService{
 
-	private final UserRepository users;
+	private final UserRepository userRepository;
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public User updateUser(User user){
-		return users.saveOrUpdate(user);
+		return userRepository.saveOrUpdate(user);
 	}
 
 	public User parseUser(String str){
@@ -54,7 +54,7 @@ public class UserService{
 
 		OffsetBasedPageRequest paging = new OffsetBasedPageRequest(filter.offset(), filter.limit());
 
-		return users.findAll(criteria, paging).getContent();
+		return userRepository.findAll(criteria, paging).getContent();
 	}
 
 	private RawUser parseRawUser(String str){

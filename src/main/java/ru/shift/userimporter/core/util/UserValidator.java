@@ -17,6 +17,8 @@ public class UserValidator{
 	private static final Pattern DATE_PATTERN = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+	private static final int MIN_USER_AGE = 18;
+
 	public static void validateRawUser(RawUser user){
 		validateFirstName(user.firstName());
 		validateLastName(user.lastName());
@@ -110,7 +112,7 @@ public class UserValidator{
 		if (!birthDate.isBefore(now)){
 			throw new UserImporterException("Birth date is before current date", ErrorCode.INVALID_BIRTHDATE);
 		}
-		else if (Period.between(birthDate, now).getYears() < 18){
+		else if (Period.between(birthDate, now).getYears() < MIN_USER_AGE){
 			throw new UserImporterException("Users' age must be greater or equal 18 years", ErrorCode.INVALID_BIRTHDATE);
 		}
 	}

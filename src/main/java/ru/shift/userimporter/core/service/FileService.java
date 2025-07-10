@@ -61,8 +61,6 @@ public class FileService{
 
 		// Inserting new entry for this file into DB
 		UsersFile newEntry = UsersFile.builder()
-			.insertedRows(0)
-			.updatedRows(0)
 			.originalFilename(file.getOriginalFilename())
 			.storagePath(storedFilePath.toString())
 			.status(NEW)

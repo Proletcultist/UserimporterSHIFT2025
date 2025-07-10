@@ -8,7 +8,8 @@ import ru.shift.userimporter.core.repository.UserRepository;
 import ru.shift.userimporter.core.model.User;
 import ru.shift.userimporter.core.model.RawUser;
 import ru.shift.userimporter.core.util.UserValidator;
-import ru.shift.userimporter.core.exception.UserValidationException;
+import ru.shift.userimporter.core.exception.UserImporterException;
+import ru.shift.userimporter.core.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class UserService{
 		return users.saveOrUpdate(user);
 	}
 
-	public User parseUser(String str) throws UserValidationException{
+	public User parseUser(String str){
 		RawUser raw = parseRawUser(str);
 
 		UserValidator.validateRawUser(raw);
@@ -29,10 +30,10 @@ public class UserService{
 		return rawUserToUser(raw);
 	}
 
-	private RawUser parseRawUser(String str) throws UserValidationException{
+	private RawUser parseRawUser(String str){
 		String splitted[] = str.split(",");
 		if (splitted.length != 6){
-			throw new UserValidationException("Wrong amount of fields", "INVALID_FORMAT");
+			throw new UserImporterException("Wrong amount of fields", ErrorCode.INVALID_FORMAT);
 		}
 
 		return RawUser.builder()

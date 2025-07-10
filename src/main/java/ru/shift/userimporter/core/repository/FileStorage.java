@@ -8,34 +8,33 @@ import java.nio.file.Paths;
 import java.nio.file.InvalidPathException;
 import org.springframework.stereotype.Repository;
 import ru.shift.userimporter.config.FileStorageProperties;
-import ru.shift.userimporter.core.exception.FileStorageException;
-import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
+import ru.shift.userimporter.core.exception.ErrorCode;
+import ru.shift.userimporter.core.exception.UserImporterException;
 
 @Repository
 public class FileStorage{
 	private final Path rootLocation;
 
-	public FileStorage(FileStorageProperties properties) throws FileStorageException{
+	public FileStorage(FileStorageProperties properties){
 		try{
 			rootLocation = Paths.get(properties.getLocation()).normalize().toAbsolutePath();
 			Files.createDirectories(rootLocation);
 		}
 		catch (InvalidPathException e){
-			throw new FileStorageException("String \""+properties.getLocation()+"\" cannot be converted to Path", e);
+			throw new UserImporterException("String \""+properties.getLocation()+"\" cannot be converted to Path", ErrorCode.UNEXPECTED_ERROR, e);
 		}
 		catch (IOException e){
-			throw new FileStorageException("Could not initialize storage", e);
+			throw new UserImporterException("Could not initialize storage", ErrorCode.UNEXPECTED_ERROR, e);
 		}
 	}
 
-	public Path store(InputStream file, String filename) throws FileStorageException,
-	       								FileStorageInvalidFilenameException{
+	public Path store(InputStream file, String filename){
 		Path pathedFilename;
 		try{
 			pathedFilename = Paths.get(filename);
 		}
 		catch (InvalidPathException e){
-			throw new FileStorageInvalidFilenameException("Invalid filename", e);
+			throw new UserImporterException(ErrorCode.INVALID_FILENAME.getDefaultMessage(), ErrorCode.INVALID_FILENAME, e);
 		}
 
 
@@ -43,7 +42,7 @@ public class FileStorage{
 				.normalize().toAbsolutePath();
 
 		if (!destination.getParent().equals(rootLocation)){
-			throw new FileStorageInvalidFilenameException("Cannot store file outside appropriate directory");
+			throw new UserImporterException("Cannot store file outside appropriate directory", ErrorCode.INVALID_FILENAME);
 		}
 
 
@@ -51,7 +50,7 @@ public class FileStorage{
 			Files.copy(file, destination);
 		}
 		catch(IOException e){
-			throw new FileStorageException("Failed to store file", e);
+			throw new UserImporterException(ErrorCode.STORAGE_ERROR.getDefaultMessage(), ErrorCode.STORAGE_ERROR, e);
 		}
 
 		return destination;

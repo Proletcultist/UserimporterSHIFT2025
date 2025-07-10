@@ -20,13 +20,10 @@ import ru.shift.userimporter.core.model.UsersFile;
 import ru.shift.userimporter.core.repository.FileStorage;
 import ru.shift.userimporter.core.repository.UploadedFileRepository;
 import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
-import ru.shift.userimporter.core.exception.FileServiceException;
-import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
-import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
-import ru.shift.userimporter.core.exception.FileServiceNoSuchFileException;
+import ru.shift.userimporter.core.exception.UserImporterException;
+import ru.shift.userimporter.core.exception.ErrorCode;
 import ru.shift.userimporter.core.util.MultipartFileUtils;
 import ru.shift.userimporter.core.service.UserService;
-import ru.shift.userimporter.core.exception.UserValidationException;
 import ru.shift.userimporter.core.model.User;
 import ru.shift.userimporter.core.model.FileProcessingError;
 
@@ -43,12 +40,11 @@ public class FileService{
 	// File is named according to its' hash and current timestamp
 	// Then, creates entry in DB for it
 	// Returns UsersFile object, which represents DB entry, belongs to this file
-	public UsersFile storeUsersFile(MultipartFile file) throws FileServiceInvalidFileException,
-	       								FileServiceFileAlreadyExistException{
+	public UsersFile storeUsersFile(MultipartFile file){
 
 		// Check if file is empty
 		if (file.isEmpty()){
-			throw new FileServiceInvalidFileException("Failed to store empty file");
+			throw new UserImporterException("Failed to store empty file", ErrorCode.INVALID_FILE);
 		}
 
 		// Hashing file
@@ -57,12 +53,12 @@ public class FileService{
 			hash = MultipartFileUtils.hashMultipartFile(file);
 		}
 		catch (IOException e){
-			throw new FileServiceException("Failed hashing uploaded file");
+			throw new UserImporterException("Failed hashing uploaded file", ErrorCode.FILE_SERVICE_ERROR);
 		}
 
 		// Check if this file is already exists
 		if (repositoryContainsFile(file, hash)){
-			throw new FileServiceFileAlreadyExistException("File already exist");
+			throw new UserImporterException(ErrorCode.FILE_ALREADY_EXISTS.getDefaultMessage(), ErrorCode.FILE_ALREADY_EXISTS);
 		}
 
 		String storingFilename = generateStoringFilename(hash);
@@ -73,7 +69,7 @@ public class FileService{
 			storedFile = storage.store(inputStream, storingFilename);
 		}
 		catch (IOException e){
-			throw new FileServiceException("Failed to open uploaded file");
+			throw new UserImporterException("Failed to open uploaded file", ErrorCode.FILE_SERVICE_ERROR);
 		}
 
 		// Inserting new entry for this file into DB
@@ -98,7 +94,7 @@ public class FileService{
 	// Starts processing
 	public void startFileProcessing(long fileId){
 
-		UsersFile file = uploadedFiles.findById(fileId).orElseThrow(() -> new FileServiceNoSuchFileException("File doesn't exist"));
+		UsersFile file = uploadedFiles.findById(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
 
 		processFile(file);
 
@@ -118,13 +114,13 @@ public class FileService{
 				try{
 					newUser = userService.parseUser(line);
 				}
-				catch (UserValidationException e){
+				catch (UserImporterException e){
 					processingErrors.save(FileProcessingError.builder()
 								.id(0)
 								.fileId(file.getId())
 								.rowNumber(lineNumber)
 								.errorMessage(e.getMessage())
-								.errorCode(e.getErrorCode())
+								.errorCode(e.getErrorCode().name())
 								.rawData(line)
 								.build()
 								);
@@ -170,10 +166,10 @@ public class FileService{
 
 				}
 				catch (FileNotFoundException e){
-					throw new FileServiceException("Failed to open stored file");
+					throw new UserImporterException("Failed to open stored file", ErrorCode.FILE_SERVICE_ERROR);
 				}
 				catch (IOException e){
-					throw new FileServiceException("Failed when comparing new and stored file");
+					throw new UserImporterException("Failed when comparing new and stored file", ErrorCode.FILE_SERVICE_ERROR);
 				}
 			}
 		}

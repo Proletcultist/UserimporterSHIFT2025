@@ -12,52 +12,39 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
-import ru.shift.userimporter.core.exception.FileServiceInvalidFileException;
-import ru.shift.userimporter.core.exception.FileServiceFileAlreadyExistException;
-import ru.shift.userimporter.core.exception.FileServiceException;
-import ru.shift.userimporter.core.exception.FileStorageException;
-import ru.shift.userimporter.core.exception.FileStorageInvalidFilenameException;
+import org.springframework.http.ResponseEntity;
+import ru.shift.userimporter.core.exception.UserImporterException;
+import ru.shift.userimporter.core.exception.ErrorCode;
 import ru.shift.userimporter.api.dto.ErrorDto;
 import ru.shift.userimporter.core.model.FileStatus;
-import ru.shift.userimporter.core.exception.FileServiceNoSuchFileException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
 
-	@ExceptionHandler(value = FileStorageInvalidFilenameException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto invalidFilename(FileStorageInvalidFilenameException e){
-		return new ErrorDto(e.getMessage());
-	}
-	
-	@ExceptionHandler(value = FileStorageException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ErrorDto storageError(FileStorageException e){
-		return new ErrorDto(e.getMessage());
-	}
+	@ExceptionHandler(value = UserImporterException.class)
+	public ResponseEntity<ErrorDto> handleUserImporterException(UserImporterException e){
+		ResponseEntity.BodyBuilder builder;
 
-	@ExceptionHandler(value = FileServiceInvalidFileException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public ErrorDto invalidFile(FileServiceInvalidFileException e){
-		return new ErrorDto(e.getMessage());
-	}
+		switch (e.getErrorCode()){
+			case INVALID_FILENAME:
+			case INVALID_FILE:
+				builder = ResponseEntity.status(HttpStatus.BAD_REQUEST);
+				break;
+			case FILE_ALREADY_EXISTS:
+				builder = ResponseEntity.status(HttpStatus.CONFLICT);
+				break;
+			case NO_SUCH_FILE:
+				builder = ResponseEntity.status(HttpStatus.NOT_FOUND);
+				break;
+			case STORAGE_ERROR:
+			case FILE_SERVICE_ERROR:
+			case UNEXPECTED_ERROR:
+			default:
+				builder = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+				break;
+		}
 
-	@ExceptionHandler(value = FileServiceFileAlreadyExistException.class)
-	@ResponseStatus(value = HttpStatus.CONFLICT)
-	public ErrorDto fileAlreadyExist(FileServiceFileAlreadyExistException e){
-		return new ErrorDto(e.getMessage());
-	}
-
-	@ExceptionHandler(value = FileServiceNoSuchFileException.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	public ErrorDto fileNotFound(FileServiceNoSuchFileException e){
-		return new ErrorDto(e.getMessage());
-	}
-
-	@ExceptionHandler(value = FileServiceException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ErrorDto fileServiceError(FileServiceException e){
-		return new ErrorDto(e.getMessage());
+		return builder.body(new ErrorDto(e.getMessage()));
 	}
 
 	@ExceptionHandler(value = MultipartException.class)

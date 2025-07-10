@@ -60,7 +60,6 @@ public class FileService{
 
 		// Inserting new entry for this file into DB
 		UsersFile newEntry = UsersFile.builder()
-			.id(0)
 			.insertedRows(0)
 			.updatedRows(0)
 			.originalFilename(file.getOriginalFilename())
@@ -79,7 +78,6 @@ public class FileService{
 
 	// Search for file in DB
 	// Starts processing
-	@Transactional(readOnly = true)
 	public void startFileProcessing(long fileId){
 
 		UsersFile file = uploadedFileRepository.findById(fileId).orElseThrow(() -> new UserImporterException(ErrorCode.NO_SUCH_FILE.getDefaultMessage(), ErrorCode.NO_SUCH_FILE));
@@ -104,7 +102,6 @@ public class FileService{
 				}
 				catch (UserImporterException e){
 					errorRepository.save(FileProcessingError.builder()
-								.id(0)
 								.fileId(file.getId())
 								.rowNumber(lineNumber)
 								.errorMessage(e.getMessage())

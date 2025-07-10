@@ -81,8 +81,6 @@ public class UserService{
 			.email(rawUser.email())
 			.phone(rawUser.phone())
 			.birthDate(LocalDate.parse(rawUser.birthDate(), DATE_FORMATTER))
-			.createdAt(null)
-			.updatedAt(null)
 			.build();
 	}
 

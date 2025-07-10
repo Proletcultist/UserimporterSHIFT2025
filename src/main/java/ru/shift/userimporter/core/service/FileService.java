@@ -47,30 +47,14 @@ public class FileService{
 			throw new UserImporterException("Failed to store empty file", ErrorCode.INVALID_FILE);
 		}
 
-		// Hashing file
-		String hash;
-		try{
-			hash = MultipartFileUtils.hashMultipartFile(file);
-		}
-		catch (IOException e){
-			throw new UserImporterException("Failed hashing uploaded file", ErrorCode.FILE_SERVICE_ERROR);
-		}
+		String hash = calculateFileHash(file);
 
 		// Check if this file is already exists
 		if (repositoryContainsFile(file, hash)){
 			throw new UserImporterException(ErrorCode.FILE_ALREADY_EXISTS.getDefaultMessage(), ErrorCode.FILE_ALREADY_EXISTS);
 		}
 
-		String storingFilename = generateStoringFilename(hash);
-
-		// Storing file
-		Path storedFile;
-		try (InputStream inputStream = file.getInputStream()){
-			storedFile = storage.store(inputStream, storingFilename);
-		}
-		catch (IOException e){
-			throw new UserImporterException("Failed to open uploaded file", ErrorCode.FILE_SERVICE_ERROR);
-		}
+		Path storedFile = saveFileToStorage(file, generateStoringFilename(hash));
 
 		// Inserting new entry for this file into DB
 		UsersFile newEntry = UsersFile.builder()
@@ -150,6 +134,24 @@ public class FileService{
 
 		uploadedFiles.updateRowsInfo(inserted, updated, file.getId());
 		uploadedFiles.updateStatus("DONE", file.getId());
+	}
+
+	private String calculateFileHash(MultipartFile file){
+		try{
+			return MultipartFileUtils.hashMultipartFile(file);
+		}
+		catch (IOException e){
+			throw new UserImporterException("Failed hashing uploaded file", ErrorCode.FILE_SERVICE_ERROR);
+		}
+	}
+
+	private Path saveFileToStorage(MultipartFile file, String storingFilename){
+		try (InputStream inputStream = file.getInputStream()){
+			return storage.store(inputStream, storingFilename);
+		}
+		catch (IOException e){
+			throw new UserImporterException("Failed to open uploaded file", ErrorCode.FILE_SERVICE_ERROR);
+		}
 	}
 
 	// Needs precalculated file hash

@@ -17,7 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
-import ru.shift.userimporter.core.repository.FileStorage;
+import ru.shift.userimporter.core.service.FileStorageService;
 import ru.shift.userimporter.core.repository.UploadedFileRepository;
 import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
 import ru.shift.userimporter.core.exception.UserImporterException;
@@ -31,7 +31,7 @@ import ru.shift.userimporter.core.model.FileProcessingError;
 @RequiredArgsConstructor
 public class FileService{
 
-	private final FileStorage storage;
+	private final FileStorageService storage;
 	private final UploadedFileRepository uploadedFiles;
 	private final FileProcessingErrorRepository processingErrors;
 	private final UserService userService;

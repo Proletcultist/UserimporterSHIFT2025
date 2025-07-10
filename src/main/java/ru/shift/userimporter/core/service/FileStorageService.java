@@ -1,4 +1,4 @@
-package ru.shift.userimporter.core.repository;
+package ru.shift.userimporter.core.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,16 +6,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.InvalidPathException;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import ru.shift.userimporter.config.FileStorageProperties;
 import ru.shift.userimporter.core.exception.ErrorCode;
 import ru.shift.userimporter.core.exception.UserImporterException;
 
-@Repository
-public class FileStorage{
+@Service
+public class FileStorageService{
 	private final Path rootLocation;
 
-	public FileStorage(FileStorageProperties properties){
+	public FileStorageService(FileStorageProperties properties){
 		try{
 			rootLocation = Paths.get(properties.getLocation()).normalize().toAbsolutePath();
 			Files.createDirectories(rootLocation);

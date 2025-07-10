@@ -8,7 +8,6 @@ import ru.shift.userimporter.core.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
 
-
 	@Query(value = "INSERT INTO users" +
 		"(first_name, last_name, middle_name, email, phone, birth_date, created_at, updated_at) " + 
 		"VALUES(" +

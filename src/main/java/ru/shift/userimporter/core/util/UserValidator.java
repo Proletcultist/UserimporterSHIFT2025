@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import ru.shift.userimporter.core.exception.UserImporterException;
 import ru.shift.userimporter.core.exception.ErrorCode;
 import ru.shift.userimporter.core.model.RawUser;
+import ru.shift.userimporter.core.model.UserSearchFilter;
 
 public class UserValidator{
 
@@ -23,6 +24,21 @@ public class UserValidator{
 		validateEmail(user.email());
 		validatePhone(user.phone());
 		validateBirthDate(user.birthDate());
+	}
+
+	public static void validateUserSearchFilter(UserSearchFilter filter){
+		if (filter.phone() != null){
+			validatePhone(filter.phone().toString());
+		}
+		if (filter.name() != null){
+			validateFirstName(filter.name());
+		}
+		if (filter.lastName() != null){
+			validateLastName(filter.lastName());
+		}
+		if (filter.email() != null){
+			validateEmail(filter.email());
+		}
 	}
 
 	private static void validateFirstName(String name){

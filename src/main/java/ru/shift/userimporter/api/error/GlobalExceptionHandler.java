@@ -124,7 +124,6 @@ public class GlobalExceptionHandler{
 
 	}
 
-	/*
 	@ExceptionHandler(value = Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ErrorDto unexpectedException(Exception e){
@@ -136,6 +135,5 @@ public class GlobalExceptionHandler{
 	public ErrorDto unexpectedRuntimeException(RuntimeException e){
 		return new ErrorDto("Unexpected error");
 	}
-	*/
 
 }

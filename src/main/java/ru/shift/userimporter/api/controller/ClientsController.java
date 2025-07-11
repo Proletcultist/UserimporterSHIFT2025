@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.PositiveOrZero;
 import ru.shift.userimporter.core.service.UserService;
 import ru.shift.userimporter.api.mapper.UserMapper;
 import ru.shift.userimporter.api.dto.UserDto;
@@ -29,8 +30,8 @@ public class ClientsController{
 					@RequestParam(name = "name", required = false) String name,
 					@RequestParam(name = "lastName", required = false) String lastName,
 					@RequestParam(name = "email", required = false) String email,
-					@RequestParam(name = "limit", required = false) Integer limit,
-					@RequestParam(name = "offset", required = false) Integer offset){
+					@RequestParam(name = "limit", required = false) @PositiveOrZero Integer limit,
+					@RequestParam(name = "offset", required = false) @PositiveOrZero Integer offset){
 
 		UserSearchFilter filter = UserSearchFilter.builder()
 						.phone(phone)

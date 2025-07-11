@@ -2,7 +2,6 @@ package ru.shift.userimporter.core.service;
 
 import java.util.List;
 import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.io.IOUtils;
 import lombok.RequiredArgsConstructor;
 import ru.shift.userimporter.core.model.UsersFile;
 import ru.shift.userimporter.core.service.FileStorageService;
@@ -47,7 +45,7 @@ public class FileService{
 		String hash = calculateFileHash(file);
 
 		// Check if this file is already exists
-		if (isFileAlreadyUploaded(file, hash)){
+		if (uploadedFileRepository.existsByHash(hash)){
 			throw new UserImporterException(ErrorCode.FILE_ALREADY_EXISTS.getDefaultMessage(), ErrorCode.FILE_ALREADY_EXISTS);
 		}
 
@@ -100,32 +98,6 @@ public class FileService{
 		catch (IOException e){
 			throw new UserImporterException("Failed to open uploaded file", ErrorCode.FILE_SERVICE_ERROR);
 		}
-	}
-
-	// Needs precalculated file hash
-	@Transactional(readOnly = true)
-	private boolean isFileAlreadyUploaded(MultipartFile file, String hash){
-
-		for (UsersFile uploadedFile : uploadedFileRepository.findByHash(hash)){
-			if (uploadedFile.getHash().equals(hash)){
-				try (InputStream uploadedFileIS = new FileInputStream(uploadedFile.getStoragePath());
-						InputStream fileIS = file.getInputStream()){
-
-					if (IOUtils.contentEquals(uploadedFileIS, fileIS)){
-						return true;
-					}	
-
-				}
-				catch (FileNotFoundException e){
-					throw new UserImporterException("Failed to open stored file", ErrorCode.FILE_SERVICE_ERROR);
-				}
-				catch (IOException e){
-					throw new UserImporterException("Failed when comparing new and stored file", ErrorCode.FILE_SERVICE_ERROR);
-				}
-			}
-		}
-
-		return false;
 	}
 
 	// Needs precalculated file hash

@@ -1,9 +1,9 @@
-package ru.shift.userimporter.core.model;
+package ru.shift.userimporter.core.util;
 
 import lombok.Builder;
 
 @Builder
-public record RawUser(
+record RawUser(
 	String firstName,
 	String lastName,
 	String middleName,

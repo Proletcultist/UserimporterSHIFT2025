@@ -18,6 +18,7 @@ import ru.shift.userimporter.core.exception.ErrorCode;
 import ru.shift.userimporter.core.repository.FileProcessingErrorRepository;
 import ru.shift.userimporter.core.repository.UploadedFileRepository;
 import ru.shift.userimporter.core.service.UserService;
+import ru.shift.userimporter.core.util.UserParser;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class FileProcessingService{
 			User newUser;
 
 			try{
-				newUser = userService.parseUser(line);
+				newUser = UserParser.parseUser(line);
 			}
 			catch (UserImporterException e){
 				errorRepository.save(FileProcessingError.builder()

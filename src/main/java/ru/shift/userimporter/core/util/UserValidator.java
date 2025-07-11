@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 import ru.shift.userimporter.core.exception.UserImporterException;
 import static ru.shift.userimporter.core.exception.ErrorCode.*;
-import ru.shift.userimporter.core.model.RawUser;
+import ru.shift.userimporter.core.util.RawUser;
 import ru.shift.userimporter.core.model.UserSearchFilter;
 
 public class UserValidator{
@@ -19,7 +19,7 @@ public class UserValidator{
 
 	private static final int MIN_USER_AGE = 18;
 
-	public static void validateRawUser(RawUser user){
+	static void validateRawUser(RawUser user){
 		validateFirstName(user.firstName());
 		validateLastName(user.lastName());
 		validateMiddleName(user.middleName());

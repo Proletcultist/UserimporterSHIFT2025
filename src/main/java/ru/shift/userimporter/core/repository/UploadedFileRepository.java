@@ -13,7 +13,7 @@ import ru.shift.userimporter.core.model.FileStatus;
 @Repository
 public interface UploadedFileRepository extends JpaRepository<UsersFile, Long>{
 	@Query("SELECT f FROM UsersFile f LEFT JOIN FETCH f.errors WHERE f.status = :status")
-	List<UsersFile> findByStatusWithErrors(String status);
+	List<UsersFile> findByStatusWithErrors(FileStatus status);
 
 	@Query("SELECT f FROM UsersFile f LEFT JOIN FETCH f.errors WHERE f.id = :fileId")
 	Optional<UsersFile> findByIdWithErrors(long fileId);

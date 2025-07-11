@@ -22,6 +22,7 @@ import ru.shift.userimporter.core.util.MultipartFileUtils;
 import ru.shift.userimporter.core.service.UserService;
 import ru.shift.userimporter.core.model.FileProcessingError;
 import ru.shift.userimporter.core.service.FileProcessingService;
+import ru.shift.userimporter.core.model.FileStatus;
 
 @Service
 @RequiredArgsConstructor
@@ -63,7 +64,7 @@ public class FileService{
 	}
 
 	@Transactional(readOnly = true)
-	public List<UsersFile> getByStatus(String status){
+	public List<UsersFile> getByStatus(FileStatus status){
 		return uploadedFileRepository.findByStatusWithErrors(status);
 	}
 

@@ -5,15 +5,15 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 import ru.shift.userimporter.core.exception.UserImporterException;
-import ru.shift.userimporter.core.exception.ErrorCode;
+import static ru.shift.userimporter.core.exception.ErrorCode.*;
 import ru.shift.userimporter.core.model.RawUser;
 import ru.shift.userimporter.core.model.UserSearchFilter;
 
 public class UserValidator{
 
-	private static final Pattern NAMES_PATTERN = Pattern.compile("[а-яА-Я'\\- ]*");
-	private static final Pattern GENERAL_EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%\\-]+@[a-zA-Z0-9_\\-]+\\.[a-zA-Z0-9_\\-]+");
-	private static final Pattern SHIFT_EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%\\-]+@(shift\\.com|shift\\.ru)");
+	private static final Pattern NAMES_PATTERN = Pattern.compile("[А-ЯЁ][а-яёА-ЯЁ'\\- ]{2,49}");
+	private static final Pattern EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%\\-]+@(shift\\.com|shift\\.ru)");
+	private static final Pattern PHONE_PATTERN = Pattern.compile("7\\d{10}");
 	private static final Pattern DATE_PATTERN = Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -44,26 +44,14 @@ public class UserValidator{
 	}
 
 	private static void validateFirstName(String name){
-		if (name.length() < 3 || name.length() > 50){
-			throw new UserImporterException("Length must be from 3 to 50 characters", ErrorCode.INVALID_NAME);
-		}
-		else if (!NAMES_PATTERN.matcher(name).matches()){
-			throw new UserImporterException("Invalid character", ErrorCode.INVALID_NAME);
-		}
-		else if (name.charAt(0) < 'А' || name.charAt(0) > 'Я'){
-			throw new UserImporterException("First character isn't capital cyrillic character", ErrorCode.INVALID_NAME);
+		if (!NAMES_PATTERN.matcher(name).matches()){
+			throw new UserImporterException(INVALID_NAME.getDefaultMessage(),INVALID_NAME);
 		}
 	}
 
 	private static void validateLastName(String name){
-		if (name.length() < 3 || name.length() > 50){
-			throw new UserImporterException("Length must be from 3 to 50 characters", ErrorCode.INVALID_LAST_NAME);
-		}
-		else if (!NAMES_PATTERN.matcher(name).matches()){
-			throw new UserImporterException("Invalid character", ErrorCode.INVALID_LAST_NAME);
-		}
-		else if (name.charAt(0) < 'А' || name.charAt(0) > 'Я'){
-			throw new UserImporterException("First character isn't capital cyrillic character", ErrorCode.INVALID_LAST_NAME);
+		if (!NAMES_PATTERN.matcher(name).matches()){
+			throw new UserImporterException(INVALID_LAST_NAME.getDefaultMessage(), INVALID_LAST_NAME);
 		}
 	}
 
@@ -72,62 +60,36 @@ public class UserValidator{
 			return;
 		}
 
-		if (name.length() < 3 || name.length() > 50){
-			throw new UserImporterException("Length must be from 3 to 50 characters", ErrorCode.INVALID_MIDDLE_NAME);
-		}
-		else if (!NAMES_PATTERN.matcher(name).matches()){
-			throw new UserImporterException("Invalid character", ErrorCode.INVALID_MIDDLE_NAME);
-		}
-		else if (name.charAt(0) < 'А' || name.charAt(0) > 'Я'){
-			throw new UserImporterException("First character isn't capital cyrillic character", ErrorCode.INVALID_MIDDLE_NAME);
+		if (!NAMES_PATTERN.matcher(name).matches()){
+			throw new UserImporterException(INVALID_MIDDLE_NAME.getDefaultMessage(), INVALID_MIDDLE_NAME);
 		}
 	}
 
 	private static void validateEmail(String email){
-		if (!GENERAL_EMAIL_PATTERN.matcher(email).matches()){
-			throw new UserImporterException("Invalid email", ErrorCode.INVALID_EMAIL);
-		}
-		else if (!SHIFT_EMAIL_PATTERN.matcher(email).matches()){
-			throw new UserImporterException("Invalid mail server, only shift.com and shift.ru are allowed", ErrorCode.INVALID_EMAIL);
+		if (!EMAIL_PATTERN.matcher(email).matches()){
+			throw new UserImporterException(INVALID_EMAIL.getDefaultMessage(), INVALID_EMAIL);
 		}
 	}
 
 	private static void validatePhone(String phone){
-		if (!UserValidator.isNumeric(phone)){
-			throw new UserImporterException("Invalid phone", ErrorCode.INVALID_PHONE);
-		}
-		else if (phone.length() != 11 || phone.charAt(0) != '7'){
-			throw new UserImporterException("Invalid country code, only 7 is allowed", ErrorCode.INVALID_PHONE);
+		if (!PHONE_PATTERN.matcher(phone).matches()){
+			throw new UserImporterException(INVALID_PHONE.getDefaultMessage(), INVALID_PHONE);
 		}
 	}
 
 	private static void validateBirthDate(String birthDateStr){
 		if (!DATE_PATTERN.matcher(birthDateStr).matches()){
-			throw new UserImporterException("Invalid birth date", ErrorCode.INVALID_BIRTHDATE);
+			throw new UserImporterException(INVALID_BIRTHDATE.getDefaultMessage(), INVALID_BIRTHDATE);
 		}
 
 		LocalDate birthDate = LocalDate.parse(birthDateStr, DATE_FORMATTER);
 		LocalDate now = LocalDate.now();
 
 		if (!birthDate.isBefore(now)){
-			throw new UserImporterException("Birth date is before current date", ErrorCode.INVALID_BIRTHDATE);
+			throw new UserImporterException("Birth date is before current date", INVALID_BIRTHDATE);
 		}
 		else if (Period.between(birthDate, now).getYears() < MIN_USER_AGE){
-			throw new UserImporterException("Users' age must be greater or equal 18 years", ErrorCode.INVALID_BIRTHDATE);
+			throw new UserImporterException("Users' age must be greater or equal 18 years", INVALID_BIRTHDATE);
 		}
-	}
-
-	private static boolean isNumeric(String str){
-		if (str == null || str.isEmpty()){
-			return false;
-		}
-
-		for (int i = 0; i < str.length(); i++){
-			if (!Character.isDigit(str.charAt(i))){
-				return false;
-			}
-		}
-
-		return true;
 	}
 }

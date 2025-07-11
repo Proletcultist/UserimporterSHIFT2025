@@ -7,6 +7,7 @@ import java.io.IOException;
 import static java.time.LocalDateTime.now;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import org.springframework.scheduling.annotation.Async;
 import static ru.shift.userimporter.core.model.FileStatus.*;
 import ru.shift.userimporter.core.model.UsersFile;
@@ -31,49 +32,66 @@ public class FileProcessingService{
 
 		uploadedFileRepository.updateStatus(IN_PROGRESS, file.getId());
 
-		String line;
-		int lineNumber = 1, inserted = 0, updated = 0;
+		FileProcessingResult res = new FileProcessingResult();
+
 		try (BufferedReader reader = new BufferedReader(new FileReader(new File(file.getStoragePath())))){
-			while ((line = reader.readLine()) != null){
-				User newUser;
-
-				try{
-					newUser = userService.parseUser(line);
-				}
-				catch (UserImporterException e){
-					errorRepository.save(FileProcessingError.builder()
-								.fileId(file.getId())
-								.rowNumber(lineNumber)
-								.errorMessage(e.getMessage())
-								.errorCode(e.getErrorCode().name())
-								.rawData(line)
-								.build()
-								);
-					lineNumber++;
-					continue;
-				}
-
-				newUser.setCreatedAt(now());
-				newUser.setUpdatedAt(newUser.getCreatedAt());
-
-				User userInRepo = userService.updateUser(newUser);
-
-				if (userInRepo.getCreatedAt().isEqual(userInRepo.getUpdatedAt())){
-					inserted++;
-				}
-				else{
-					updated++;
-				}
-
-				lineNumber++;
-			}
+			iterateThroughFile(file.getId(), reader, res);
 		}
 		catch (IOException e){
+			uploadedFileRepository.updateRowsInfo(res.getInsertedRows(), res.getUpdatedRows(), file.getId());
 			uploadedFileRepository.updateStatus(FAILED, file.getId());
+			return;
 		}
 
-		uploadedFileRepository.updateRowsInfo(inserted, updated, file.getId());
+		uploadedFileRepository.updateRowsInfo(res.getInsertedRows(), res.getUpdatedRows(), file.getId());
 		uploadedFileRepository.updateStatus(DONE, file.getId());
 	}
 
+	private void iterateThroughFile(long fileId, BufferedReader reader, FileProcessingResult res) throws IOException{
+		String line;
+		int lineNumber = 1;
+		while ((line = reader.readLine()) != null){
+			User newUser;
+
+			try{
+				newUser = userService.parseUser(line);
+			}
+			catch (UserImporterException e){
+				errorRepository.save(FileProcessingError.builder()
+							.fileId(fileId)
+							.rowNumber(lineNumber)
+							.errorMessage(e.getMessage())
+							.errorCode(e.getErrorCode().name())
+							.rawData(line)
+							.build()
+							);
+				lineNumber++;
+				continue;
+			}
+
+			newUser.setCreatedAt(now());
+			newUser.setUpdatedAt(newUser.getCreatedAt());
+
+			User userInRepo = userService.updateUser(newUser);
+
+			if (userInRepo.getCreatedAt().isEqual(userInRepo.getUpdatedAt())){
+				res.incrementInsertedRowsCounter();
+			}
+			else{
+				res.incrementUpdatedRowsCounter();
+			}
+
+			lineNumber++;
+		}
+	}
+
+	@Getter
+	private class FileProcessingResult{
+		private int insertedRows = 0;
+		private int updatedRows = 0;
+
+		public void incrementInsertedRowsCounter(){ insertedRows++; }
+		public void incrementUpdatedRowsCounter(){ updatedRows++; }
+	}
 }
+
